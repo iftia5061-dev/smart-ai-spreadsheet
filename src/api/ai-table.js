@@ -1,7 +1,7 @@
 const admin = require("firebase-admin");
 
 const FREE_AI_TABLE_LIMIT = 2;
-const DEFAULT_MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash";
+const DEFAULT_MODEL = "gemini-2.5-flash";
 
 function initAdmin() {
   if (admin.apps.length) return;
