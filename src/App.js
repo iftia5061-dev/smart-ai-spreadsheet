@@ -50,7 +50,7 @@ const LEMON_WEB_LINK = "https://iftiahamed.lemonsqueezy.com/checkout/buy/47f6d21
 const LEMON_APP_LINK = "https://iftiahamed.lemonsqueezy.com/checkout/buy/70cb73d8-2986-4247-8e7a-6a122828592b";
 const AUTOSAVE_DELAY = 1500;
 const AI_FREE_TABLE_LIMIT = 2;
-const AI_TABLE_ENDPOINT = "/api/ai-table";
+const AI_TABLE_ENDPOINT = "https://smart-ai-two-phi.vercel.app/api/ai-table";
 const ENABLE_AI_TABLE = true;
 // ↓ REPLACE with your real AdSense Publisher ID
 // Line 51-57 এ এই অংশটা replace করো:
@@ -3398,7 +3398,7 @@ const handleAITableGenerate = async (prompt) => {
     setShowAITable(false);
   } catch (err) {
     console.error("AI table error:", err);
-    alert("AI table বানাতে সমস্যা হয়েছে। API endpoint/backend ঠিক আছে কিনা check করো.");
+    alert("AI Table Error: " + err.message);
   } finally {
     setAiBuildLoading(false);
   }

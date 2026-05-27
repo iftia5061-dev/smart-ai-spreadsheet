@@ -213,7 +213,7 @@ module.exports = async function handler(req, res) {
 
     if (!result) {
       res.status(lastError?.status === 429 ? 429 : 500).json({
-        code: lastError?.status === 429 ? "AI_QUOTA_REACHED" : "AI_FAILED",
+        code: lastError?.status === 429 ? "AI_QU_REACHED" : "AI_FAILED",
         error: lastError?.status === 429
           ? "AI quota limit reached today. Try again later."
           : "AI table generation failed.",
