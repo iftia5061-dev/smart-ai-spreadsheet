@@ -51,7 +51,7 @@ const LEMON_APP_LINK = "https://iftiahamed.lemonsqueezy.com/checkout/buy/70cb73d
 const AUTOSAVE_DELAY = 1500;
 const AI_FREE_TABLE_LIMIT = 2;
 const AI_TABLE_ENDPOINT = "/api/ai-table";
-const ENABLE_AI_TABLE = false;
+const ENABLE_AI_TABLE = true;
 // ↓ REPLACE with your real AdSense Publisher ID
 // Line 51-57 এ এই অংশটা replace করো:
 const ADSENSE_PUB_ID = "ca-pub-5628645711343874";
