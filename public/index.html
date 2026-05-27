@@ -1,0 +1,190 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- SEO Meta Tags -->
+    <title>SheetMind — AI Powered Smart Spreadsheet</title>
+    <meta name="description" content="SheetMind is an AI-powered smart spreadsheet. Create tables instantly, analyze data, export PDF & Excel, cloud sync — all free from your browser." />
+    <meta name="keywords" content="spreadsheet, AI spreadsheet, data entry, excel alternative, SheetMind, smart sheet, online spreadsheet, Bangladesh" />
+    <meta name="author" content="Ifti Ahamed" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#030712" />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="SheetMind — AI Powered Smart Spreadsheet" />
+    <meta property="og:description" content="AI-powered table generation, PDF export, analytics, cloud sync — all in one free tool." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="/og-image.png" />
+    <meta property="og:site_name" content="SheetMind" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="SheetMind — AI Powered Smart Spreadsheet" />
+    <meta name="twitter:description" content="AI-powered smart spreadsheet for everyone. Free to use!" />
+    <meta name="twitter:image" content="/og-image.png" />
+
+    <!-- Favicon -->
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" href="/logo192.png" />
+
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5628645711343874"
+     crossorigin="anonymous"></script>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;700;900&display=swap" rel="stylesheet" />
+
+    <style>
+      body {
+        background-color: #030712;
+        font-family: 'Inter', sans-serif;
+      }
+
+      ::-webkit-scrollbar { width: 6px; height: 6px; }
+      ::-webkit-scrollbar-track { background: #0a1628; }
+      ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 10px; }
+      ::-webkit-scrollbar-thumb:hover { background: #2563eb; }
+
+      .neo-row:hover {
+        background-color: #3b82f615 !important;
+        transition: background 0.15s ease;
+      }
+
+      .neo-card {
+        background: #0a1628;
+        border: 1px solid #3b82f622;
+        border-radius: 16px;
+        transition: all 0.2s ease;
+      }
+      .neo-card:hover {
+        border-color: #3b82f655;
+        box-shadow: 0 0 24px #3b82f615;
+      }
+
+      .neo-input {
+        background: #0a1628;
+        border: 1px solid #3b82f630;
+        border-radius: 10px;
+        color: #e2e8f0;
+        padding: 8px 14px;
+        transition: border 0.2s;
+      }
+      .neo-input:focus {
+        border-color: #3b82f6;
+        outline: none;
+        box-shadow: 0 0 0 3px #3b82f620;
+      }
+
+      @keyframes pulse-blue {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+      }
+
+      /* Loading Screen */
+      #loading {
+        position: fixed;
+        inset: 0;
+        background: #030712;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        transition: opacity 0.5s ease;
+      }
+      #loading.hidden {
+        opacity: 0;
+        pointer-events: none;
+      }
+      .loading-logo {
+        width: 72px;
+        height: 72px;
+        background: linear-gradient(135deg, #3b82f6, #6366f1);
+        border-radius: 22px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 30px;
+        font-weight: 900;
+        color: white;
+        margin-bottom: 20px;
+        font-family: 'Inter', sans-serif;
+        box-shadow: 0 0 40px #3b82f640;
+        animation: pulse-blue 1.5s ease-in-out infinite;
+      }
+      .loading-name {
+        color: #e2e8f0;
+        font-size: 22px;
+        font-weight: 900;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        font-family: 'Inter', sans-serif;
+        background: linear-gradient(135deg, #60a5fa, #818cf8);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .loading-sub {
+        color: #475569;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.3em;
+        text-transform: uppercase;
+        margin-top: 6px;
+        font-family: 'Inter', sans-serif;
+      }
+      .loading-bar {
+        width: 180px;
+        height: 3px;
+        background: #1e3a5f;
+        border-radius: 99px;
+        margin-top: 24px;
+        overflow: hidden;
+      }
+      .loading-bar-inner {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, #3b82f6, #6366f1, #8b5cf6);
+        border-radius: 99px;
+        animation: loadbar 1.8s ease forwards;
+      }
+      @keyframes loadbar {
+        0% { width: 0%; }
+        60% { width: 80%; }
+        100% { width: 100%; }
+      }
+    </style>
+  </head>
+  <body>
+
+    <!-- Loading Screen -->
+    <div id="loading">
+      <div class="loading-logo">SM</div>
+      <div class="loading-name">SheetMind</div>
+      <div class="loading-sub">AI Powered Spreadsheet</div>
+      <div class="loading-bar">
+        <div class="loading-bar-inner"></div>
+      </div>
+    </div>
+
+    <div id="root"></div>
+
+    <script>
+      window.addEventListener('load', function() {
+        setTimeout(function() {
+          const loading = document.getElementById('loading');
+          if (loading) {
+            loading.classList.add('hidden');
+            setTimeout(() => loading.remove(), 600);
+          }
+        }, 2000);
+      });
+    </script>
+
+  </body>
+</html>
