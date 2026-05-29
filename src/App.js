@@ -474,7 +474,7 @@ function LandingPage({ onLogin, isDark }) {
     { icon: "📤", title: "Export Anywhere", desc: "Download as PDF or Excel with cell styles preserved." },
   ];
   const base = "bg-[#eef4ff] text-[#172033]";
-  const card = "bg-white border-[#c8d7ec] shadow-[0_18px_45px_rgba(43,76,126,0.10)]";
+  // const card = "bg-white border-[#c8d7ec] shadow-[0_18px_45px_rgba(43,76,126,0.10)]";
   const sub = "text-[#5f6f89]";
 
   return (
@@ -506,16 +506,28 @@ function LandingPage({ onLogin, isDark }) {
           <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></span>
           Now with Template Gallery & Real Ads
         </div>
-        <p className={`text-xl md:text-2xl max-w-3xl mx-auto mb-10 ${sub} font-bold leading-relaxed`}>Premium AI SHEETMIND and data-entry workspace for teams, freelancers, and business records.</p>
-        <button
-          onClick={onLogin}
-          className="bg-gradient-to-r from-[#2563eb] to-[#0ea5e9] hover:from-[#1d4ed8] hover:to-[#0284c7] text-white px-11 py-4 rounded-xl font-black text-sm uppercase tracking-widest transition-all shadow-[0_18px_40px_rgba(37,99,235,0.28)] border border-white/20"
-        >
-          Continue with Google
-        </button>
+        <h1 className="text-5xl md:text-7xl font-black leading-none mb-6 uppercase tracking-tighter">
+          <span className="bg-gradient-to-r from-[#2457d6] via-[#1196d7] to-[#0f9f8f] bg-clip-text text-transparent">The Smarter</span>
+          <br /><span className="text-[#172033]">SHEETMIND</span>
+          <br /><span className="bg-gradient-to-r from-[#0f9f8f] via-[#1196d7] to-[#2457d6] bg-clip-text text-transparent">For Everyone</span>
+        </h1>
+        <p className="text-base md:text-lg max-w-xl mx-auto mb-8 text-[#5f6f89]">
+          AI table builder, real formulas, cloud sync, PDF export — all in one tool. Better than Google Sheets for data entry.
+        </p>
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-4">
+          <button onClick={onLogin}
+            className="bg-gradient-to-r from-[#2563eb] to-[#0ea5e9] text-white px-10 py-4 rounded-2xl font-black text-sm uppercase tracking-widest transition-all shadow-2xl shadow-blue-200 hover:shadow-blue-300 hover:-translate-y-1 w-full sm:w-auto">
+            Continue with Google — Free
+          </button>
+          <a href="#pricing"
+            className="px-8 py-4 rounded-2xl font-black text-sm uppercase tracking-widest border border-[#c8d7ec] text-[#36516f] hover:bg-white transition-all w-full sm:w-auto text-center">
+            See Pricing →
+          </a>
+        </div>
+        <p className="text-[10px] text-[#8fa3bd] font-black uppercase tracking-widest mb-8">No credit card · Free forever · Upgrade anytime</p>
       </div>
       {/* Premium Pricing Section */}
-      <div className="max-w-6xl mx-auto px-8 pb-12">
+      <div id="pricing" className="max-w-6xl mx-auto px-8 pb-12">
         <div className="relative overflow-hidden rounded-[2rem] border border-[#c8d7ec] bg-white shadow-[0_28px_80px_rgba(43,76,126,0.16)]">
           <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#2563eb] via-[#0ea5e9] to-[#14b8a6]" />
           <div className="px-6 md:px-10 pt-9 pb-6 text-center">
@@ -586,17 +598,14 @@ function LandingPage({ onLogin, isDark }) {
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-8 pb-12 grid grid-cols-1 md:grid-cols-3 gap-5">
+      <div className="max-w-5xl mx-auto px-6 py-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         {features.map((f, i) => (
-          <div key={i} className={`p-6 rounded-[2rem] border ${card} transition-all hover:-translate-y-1 duration-200`}>
+          <div key={i} className={`p-6 rounded-[1.75rem] border border-[#c8d7ec] bg-white shadow-sm hover:-translate-y-1 transition-all duration-200`}>
             <div className="text-3xl mb-3">{f.icon}</div>
-            <h3 className="font-black text-sm uppercase tracking-wider mb-2">{f.title}</h3>
-            <p className={`text-xs leading-relaxed ${sub}`}>{f.desc}</p>
+            <h3 className="font-black text-sm uppercase tracking-wide mb-2 text-[#172033]">{f.title}</h3>
+            <p className="text-xs leading-relaxed text-[#5f6f89]">{f.desc}</p>
           </div>
         ))}
-      </div>
-      <div className="max-w-5xl mx-auto px-8 pb-8">
-        <BannerAd isDark={isDark} />
       </div>
 
       <footer className={`border-t ${isDark ? "border-white/5" : "border-slate-200"} py-8 text-center`}>
@@ -682,7 +691,7 @@ function AdminPanel({ onClose, isDark, currentUser }) {
         premiumPlan: "monthly", premiumExpiry: expiry,
         premiumGrantedAt: serverTimestamp(), premiumGrantedBy: "admin",
       }, { merge: true });
-      await setDoc(doc(db, "spreadsheets", u.uid), { isPremium: true }, { merge: true });
+      await setDoc(doc(db, "SHEETMINDs", u.uid), { isPremium: true }, { merge: true });
       setActionMsg(`✅ ${u.email} is now Premium!`);
       fetchAllUsers(); setTimeout(() => setActionMsg(""), 3000);
     } catch (err) { setActionMsg("❌ " + err.message); }
@@ -693,7 +702,7 @@ function AdminPanel({ onClose, isDark, currentUser }) {
     if (!db) return;
     try {
       await setDoc(doc(db, "users", u.uid), { isPremium: false, plan: "free" }, { merge: true });
-      await setDoc(doc(db, "spreadsheets", u.uid), { isPremium: false }, { merge: true });
+      await setDoc(doc(db, "SHEETMINDs", u.uid), { isPremium: false }, { merge: true });
       setActionMsg(`⚠️ Premium revoked for ${u.email}`);
       fetchAllUsers(); setTimeout(() => setActionMsg(""), 3000);
     } catch (err) { setActionMsg("❌ " + err.message); }
@@ -710,7 +719,7 @@ function AdminPanel({ onClose, isDark, currentUser }) {
         premiumGrantedAt: serverTimestamp(), premiumGrantedBy: "admin_bkash",
         paymentStatus: "approved",
       }, { merge: true });
-      await setDoc(doc(db, "spreadsheets", payment.uid), { isPremium: true }, { merge: true });
+      await setDoc(doc(db, "SHEETMINDs", payment.uid), { isPremium: true }, { merge: true });
       await setDoc(doc(db, "payment_requests", payment.docId), {
         status: "approved", approvedAt: serverTimestamp(), approvedBy: currentUser?.email,
       }, { merge: true });
@@ -2389,7 +2398,7 @@ function App() {
     } catch (e) {}
     if (currentUser && db) {
       try {
-        await setDoc(doc(db, "spreadsheets", currentUser.uid), {
+        await setDoc(doc(db, "SHEETMINDs", currentUser.uid), {
           tabs:            tabsData,
           history:         histData,
           tableCreationLog: creationLog,
@@ -2421,7 +2430,7 @@ function App() {
   const loadUserDataFromFirestore = useCallback((uid) => {
     if (firestoreUnsubRef.current) firestoreUnsubRef.current();
     if (!db) { loadFromLocalStorage(); return; }
-    const userDocRef = doc(db, "spreadsheets", uid);
+    const userDocRef = doc(db, "SHEETMINDs", uid);
     const unsub = onSnapshot(userDocRef, (snap) => {
       if (snap.exists()) {
         const data = snap.data();
@@ -4015,13 +4024,13 @@ const btnSuccess =
       )}
 
       {/* ======= MAIN LAYOUT ======= */}
-      <div className="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-4 gap-5">
-        <div className="lg:col-span-3 flex flex-col gap-4">
+      <div className="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-4 gap-3 md:gap-5">
+        <div className="lg:col-span-3 flex flex-col gap-3 md:gap-4">
 
           <BannerAd isDark={isDark} />
 
           {/* ===== HEADER ===== */}
-          <header className={`${bgPanel} border ${borderColor} rounded-[1.75rem] px-6 py-4 shadow-xl flex flex-col md:flex-row justify-between items-center gap-4`}>
+          <header className={`${bgPanel} border ${borderColor} rounded-[1.75rem] px-4 py-3 shadow-xl flex flex-col md:flex-row justify-between items-center gap-3`}>
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
                 style={{ background: "linear-gradient(135deg, #6366f1, #22d3ee)" }}>
@@ -4032,7 +4041,7 @@ const btnSuccess =
                   SheetMind
                 </h1>
                 <div className="flex items-center gap-2 mt-0.5 flex-wrap">
-                  <span className={`text-[8px] font-black tracking-[0.3em] uppercase ${textSub}`}>PRO v15</span>
+                  <span className={`text-[8px] font-black tracking-[0.3em] uppercase ${textSub}`}>Pro</span>
                   {syncBadge()}
                   {isPremium && (
                     <span className="text-[8px] font-black px-2 py-0.5 rounded-full bg-indigo-500/15 text-indigo-400 uppercase border border-indigo-500/20">
@@ -4049,7 +4058,7 @@ const btnSuccess =
               </div>
             </div>
 
-            <div className="flex flex-wrap justify-end gap-1 max-w-[620px]">
+            <div className="flex flex-wrap justify-center md:justify-end gap-1 w-full md:max-w-[620px]">
               <button onClick={() => setIsDark(d => !d)} className={`px-2 py-1.5 rounded-lg font-black text-[9px] uppercase ${btnGhost}`} title="Toggle theme">
                 {isDark ? "☀️" : "🌙"}
               </button>
@@ -4200,7 +4209,7 @@ const btnSuccess =
             <div className="p-5">
 
               {/* TOOLS ROW */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
                 {/* AI Generator */}
                 <div className={`relative ${bgSubtle} border ${borderColor} p-5 rounded-[1.5rem]`}>
                   <div className="flex items-center gap-2 mb-3">
@@ -4584,8 +4593,30 @@ const btnSuccess =
 
               {/* TITLE + SEARCH */}
               <div className={`${bgSubtle} border ${borderColor} px-4 py-3.5 rounded-2xl mb-4 flex flex-col md:flex-row justify-between items-center gap-3`}>
-                <input type="text" className="bg-transparent border-none outline-none text-xl font-black placeholder:text-slate-700/30 flex-1 w-full min-w-0"
-                  placeholder="Untitled Document" value={tableTitle} onChange={e => setTableTitle(e.target.value)} />
+                <div className="flex items-center gap-2 flex-1 min-w-0">
+                <input type="text"
+                  className="bg-transparent border-none outline-none text-xl font-black placeholder:text-slate-700/30 flex-1 min-w-0"
+                  placeholder="Untitled Document"
+                  value={tableTitle}
+                  onChange={e => setTableTitle(e.target.value)}
+                  style={{ color: activeTab?.titleColor || (isDark ? "#f1f5f9" : "#172033") }}
+                />
+                <div className="relative flex-shrink-0">
+                  <input
+                    type="color"
+                    value={activeTab?.titleColor || "#6366f1"}
+                    onChange={e => updateActiveTab({ titleColor: e.target.value })}
+                    className="w-7 h-7 rounded-lg border-0 cursor-pointer opacity-0 absolute inset-0"
+                    title="Title color"
+                  />
+                  <div className="w-7 h-7 rounded-lg border-2 cursor-pointer transition-all"
+                    style={{
+                      backgroundColor: activeTab?.titleColor || "#6366f1",
+                      borderColor: activeTab?.titleColor || "#6366f1",
+                    }}>
+                  </div>
+                </div>
+              </div>
                 <input type="text" className={`border rounded-xl px-4 py-2 outline-none text-xs w-full md:w-52 transition-all flex-shrink-0 ${inputCls}`}
                   placeholder="🔍 Search records..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} />
               </div>
@@ -4617,7 +4648,7 @@ const btnSuccess =
 
               {/* ===== TABLE ===== */}
               <div className={`${bgSubtle} rounded-2xl border ${borderColor} shadow-inner overflow-hidden`}>
-                <div className="ss-scroll-container" ref={tableRef} style={{ overflowX: "auto", overflowY: "auto", maxHeight: "520px" }}>
+                <div className="ss-scroll-container" ref={tableRef} style={{ overflowX: "auto", overflowY: "auto", maxHeight: "60vh", WebkitOverflowScrolling: "touch" }}>
                   <table className="border-collapse" style={{ tableLayout: "auto", width: "max-content", minWidth: "100%" }}>
                     <thead className={`${tableHeadCls} sticky top-0 z-10 border-b ${borderColor}`}>
                       <tr>
@@ -4854,7 +4885,7 @@ const btnSuccess =
         </div>
 
         {/* ======== SIDEBAR ======== */}
-        <div className="lg:col-span-1 flex flex-col gap-4">
+        <div className="lg:col-span-1 flex flex-col gap-3 md:gap-4 order-last lg:order-none">
           {!isPremium && <SidebarAd isDark={isDark} />}
 
           {/* History Panel */}
@@ -4951,7 +4982,6 @@ const btnSuccess =
       <style>{`
         * { -webkit-user-select: none !important; -moz-user-select: none !important; user-select: none !important; }
         td, td input, td select { -webkit-user-select: text !important; -moz-user-select: text !important; user-select: text !important; }
-        th { -webkit-user-select: none !important; user-select: none !important; } -moz-user-select: text !important; user-select: text !important; }
         th { -webkit-user-select: none !important; user-select: none !important; }
         th span.select-none { -webkit-user-select: none !important; user-select: none !important; }
         .flex-1.overflow-y-auto::-webkit-scrollbar { display: none; }
