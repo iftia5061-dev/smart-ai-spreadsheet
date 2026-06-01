@@ -46,8 +46,13 @@ const firebaseConfig = {
 const ADMIN_EMAIL = "iftia5061@gmail.com";
 const FREE_TABLE_LIMIT = 4;
 const BKASH_NUMBER = "01825453585";
-const LEMON_WEB_LINK = "https://iftiahamed.lemonsqueezy.com/checkout/buy/47f6d218-c4cc-4aa6-a33d-e511ab24f8cf";
-const LEMON_APP_LINK = "https://iftiahamed.lemonsqueezy.com/checkout/buy/70cb73d8-2986-4247-8e7a-6a122828592b";
+const LEMON_WEB_LINK = "https://iftiahamed.lemonsqueezy.com/checkout/buy/3c206055-164e-469b-bf09-a1a8c48972bf";
+const LEMON_APP_LINK = "https://iftiahamed.lemonsqueezy.com/checkout/buy/6b3e324b-ce94-44d2-9ee2-5ab6e82e41a6";
+const LEMON_MONTHLY_LINK = "https://iftiahamed.lemonsqueezy.com/checkout/buy/3c206055-164e-469b-bf09-a1a8c48972bf";
+const LEMON_YEARLY_LINK = "https://iftiahamed.lemonsqueezy.com/checkout/buy/060ed130-aa39-41d8-9c24-ab3fc1526827";
+const LEMON_DESKTOP_LINK = "https://iftiahamed.lemonsqueezy.com/checkout/buy/23bb7935-1f50-4384-8fdc-8c08023d866b";
+const LEMON_PHONE_LINK = "https://iftiahamed.lemonsqueezy.com/checkout/buy/6b3e324b-ce94-44d2-9ee2-5ab6e82e41a6";
+const SUPPORT_LINK = "mailto:iftia5061@gmail.com?subject=SheetMind%20Payment%20Support";
 const AUTOSAVE_DELAY = 1500;
 const AI_FREE_TABLE_LIMIT = 2;
 const AI_TABLE_ENDPOINT = "https://smart-ai-two-phi.vercel.app/api/ai-table";
@@ -465,158 +470,191 @@ function MiniPieChart({ data, labels }) {
 // LANDING PAGE
 // ============================================================
 function LandingPage({ onLogin, isDark }) {
-  const features = [
-    { icon: "⚡", title: "AI Generator", desc: "Generate table structures instantly from natural language prompts." },
-    { icon: "🧮", title: "Calc Engine", desc: "Real-time formula calculations across columns with filter support." },
-    { icon: "📊", title: "Auto Analytics", desc: "Bar & pie charts generated automatically from your numeric data." },
-    { icon: "🎨", title: "Smart Formatting", desc: "Per-cell color, font size, bold — isolated per sheet." },
-    { icon: "🔐", title: "Secure Auth", desc: "Google sign-in with admin monitoring of all active users." },
-    { icon: "📤", title: "Export Anywhere", desc: "Download as PDF or Excel with cell styles preserved." },
+  const monthlyLink = LEMON_MONTHLY_LINK;
+  const yearlyLink = LEMON_YEARLY_LINK;
+  const desktopLink = LEMON_DESKTOP_LINK;
+  const phoneLink = LEMON_PHONE_LINK;
+
+  const plans = [
+    {
+      id: "free",
+      name: "Free Start",
+      price: "$0",
+      period: "forever",
+      tone: "light",
+      description: "Start data entry today with no payment.",
+      features: ["4 lifetime sheets", "PDF and Excel export", "Cloud save", "Google login"],
+      action: "Start Free",
+      onClick: onLogin,
+    },
+    {
+      id: "monthly",
+      name: "Monthly Pro",
+      price: "$5",
+      period: "per month",
+      tone: "blue",
+      badge: "Popular",
+      description: "For freelancers and regular client work.",
+      features: ["Unlimited sheets", "Premium workspace", "Ad-free use", "Priority updates"],
+      action: "Choose Monthly",
+      href: monthlyLink,
+    },
+    {
+      id: "yearly",
+      name: "Yearly Pro",
+      price: "$49",
+      period: "per year",
+      tone: "gold",
+      badge: "Best Value",
+      description: "Best for business owners and teams.",
+      features: ["12 months access", "Unlimited projects", "Best yearly price", "Business-ready tools"],
+      action: "Choose Yearly",
+      href: yearlyLink,
+    },
+    {
+      id: "desktop",
+      name: "Desktop App",
+      price: "$20",
+      period: "one time",
+      tone: "slate",
+      description: "Windows app for offline office data entry.",
+      features: ["Windows installer", "Offline workflow", "Local files", "Excel and PDF export"],
+      action: "Get Desktop",
+      href: desktopLink,
+    },
+    {
+      id: "phone",
+      name: "Phone App",
+      price: "$15",
+      period: "one time",
+      tone: "green",
+      description: "Mobile app for quick field data work.",
+      features: ["Android app", "Fast entry screen", "Pro tools included", "Free updates"],
+      action: "Get Phone App",
+      href: phoneLink,
+    },
   ];
-  const base = "bg-[#eef4ff] text-[#172033]";
-  // const card = "bg-white border-[#c8d7ec] shadow-[0_18px_45px_rgba(43,76,126,0.10)]";
-  const sub = "text-[#5f6f89]";
+
+  const toneClass = {
+    light: "border-[#c8d7ec] bg-white text-[#172033] shadow-[0_18px_48px_rgba(43,76,126,0.12)]",
+    blue: "border-[#2563eb]/35 bg-gradient-to-br from-[#0b2f66] via-[#1156b7] to-[#0887c7] text-white shadow-[0_26px_70px_rgba(37,99,235,0.28)]",
+    gold: "border-[#d99b22]/40 bg-gradient-to-br from-[#3d2a08] via-[#8a5b12] to-[#d99b22] text-white shadow-[0_26px_70px_rgba(217,155,34,0.26)]",
+    slate: "border-[#64748b]/35 bg-gradient-to-br from-[#111827] via-[#263246] to-[#475569] text-white shadow-[0_26px_70px_rgba(15,23,42,0.25)]",
+    green: "border-[#10b981]/35 bg-gradient-to-br from-[#053f34] via-[#087b63] to-[#16a34a] text-white shadow-[0_26px_70px_rgba(16,185,129,0.22)]",
+  };
+
+  const mutedText = (tone) => tone === "light" ? "text-[#5f6f89]" : "text-white/78";
+  const featureText = (tone) => tone === "light" ? "text-[#36516f]" : "text-white/88";
+  const buttonClass = (tone) => tone === "light"
+    ? "border border-[#3978d8]/25 bg-[#f3f7ff] text-[#2457d6] hover:bg-[#e6efff]"
+    : "bg-white/95 text-[#172033] hover:bg-white";
+
+  const PlanCard = ({ plan, index }) => {
+    const content = (
+      <div
+        className={`group relative flex h-full min-h-[315px] flex-col overflow-hidden rounded-[1.65rem] border p-5 transition-all duration-300 hover:-translate-y-3 hover:scale-[1.015] hover:shadow-[0_34px_90px_rgba(37,99,235,0.22)] ${toneClass[plan.tone]}`}
+        style={{ animationDelay: `${index * 70}ms` }}
+      >
+        <div className="absolute inset-x-5 top-0 h-1 rounded-b-full bg-white/35 opacity-70" />
+        {plan.badge && (
+          <span className="absolute right-4 top-4 rounded-full bg-white/18 px-3 py-1 text-[8px] font-black uppercase tracking-[0.24em] text-white backdrop-blur">
+            {plan.badge}
+          </span>
+        )}
+        <p className={`mb-4 text-[10px] font-black uppercase tracking-[0.28em] ${plan.tone === "light" ? "text-[#3978d8]" : "text-white/70"}`}>
+          {plan.name}
+        </p>
+        <div className="mb-3 flex items-end gap-2">
+          <span className="text-4xl font-black tracking-tight">{plan.price}</span>
+          <span className={`mb-1 text-[10px] font-black uppercase tracking-widest ${mutedText(plan.tone)}`}>{plan.period}</span>
+        </div>
+        <p className={`mb-5 min-h-[34px] text-[11px] leading-relaxed ${mutedText(plan.tone)}`}>{plan.description}</p>
+        <div className="mb-6 space-y-2">
+          {plan.features.map((feature) => (
+            <p key={feature} className={`text-[11px] font-bold leading-relaxed ${featureText(plan.tone)}`}>
+              {feature}
+            </p>
+          ))}
+        </div>
+        <span className={`mt-auto flex w-full items-center justify-center rounded-xl px-4 py-3 text-[10px] font-black uppercase tracking-[0.22em] transition-all ${buttonClass(plan.tone)}`}>
+          {plan.action}
+        </span>
+      </div>
+    );
+
+    if (plan.onClick) {
+      return (
+        <button key={plan.id} onClick={plan.onClick} className="block h-full text-left outline-none focus-visible:ring-4 focus-visible:ring-blue-300/50 rounded-[1.65rem]">
+          {content}
+        </button>
+      );
+    }
+
+    return (
+      <a key={plan.id} href={plan.href} target="_blank" rel="noopener noreferrer" className="block h-full outline-none focus-visible:ring-4 focus-visible:ring-blue-300/50 rounded-[1.65rem]">
+        {content}
+      </a>
+    );
+  };
 
   return (
-    <div className={`min-h-screen ${base} font-sans`} style={{ fontFamily: "'DM Mono','Fira Mono',monospace" }}>
-      <div className="w-full px-8 pt-4">
-        <BannerAd isDark={isDark} />
-      </div>
-
-      <nav className="flex justify-between items-center px-8 py-5 border-b border-[#c8d7ec] bg-white/70 backdrop-blur-xl">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 to-sky-500 flex items-center justify-center">
-            <span className="text-white text-xs font-black">SM</span>
-          </div>
-          <div>
-            <span className="text-lg font-black bg-gradient-to-r from-indigo-400 via-sky-400 to-emerald-400 bg-clip-text text-transparent uppercase tracking-tighter">SHEETMIND</span>
-            <span className={`text-[9px] font-black ml-2 ${sub} tracking-[0.3em] uppercase`}>PRO v15</span>
-          </div>
-        </div>
-        <button
-          onClick={onLogin}
-          className="bg-gradient-to-r from-[#2563eb] to-[#0ea5e9] hover:from-[#1d4ed8] hover:to-[#0284c7] text-white px-7 py-3 rounded-xl font-black text-[11px] uppercase tracking-widest transition-all shadow-[0_12px_28px_rgba(37,99,235,0.28)] border border-white/20"
-        >
-          Sign In
-        </button>
-      </nav>
-
-      <div className="max-w-5xl mx-auto px-8 pt-14 pb-8 text-center">
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border text-[10px] font-black uppercase tracking-widest mb-8 border-[#bfd2ee] bg-white text-[#2457d6] shadow-sm">
-          <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></span>
-          Now with Template Gallery & Real Ads
-        </div>
-        <h1 className="text-5xl md:text-7xl font-black leading-none mb-6 uppercase tracking-tighter">
-          <span className="bg-gradient-to-r from-[#2457d6] via-[#1196d7] to-[#0f9f8f] bg-clip-text text-transparent">The Smarter</span>
-          <br /><span className="text-[#172033]">SHEETMIND</span>
-          <br /><span className="bg-gradient-to-r from-[#0f9f8f] via-[#1196d7] to-[#2457d6] bg-clip-text text-transparent">For Everyone</span>
-        </h1>
-        <p className="text-base md:text-lg max-w-xl mx-auto mb-8 text-[#5f6f89]">
-          AI table builder, real formulas, cloud sync, PDF export — all in one tool. Better than Google Sheets for data entry.
-        </p>
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-4">
-          <button onClick={onLogin}
-            className="bg-gradient-to-r from-[#2563eb] to-[#0ea5e9] text-white px-10 py-4 rounded-2xl font-black text-sm uppercase tracking-widest transition-all shadow-2xl shadow-blue-200 hover:shadow-blue-300 hover:-translate-y-1 w-full sm:w-auto">
-            Continue with Google — Free
-          </button>
-          <a href="#pricing"
-            className="px-8 py-4 rounded-2xl font-black text-sm uppercase tracking-widest border border-[#c8d7ec] text-[#36516f] hover:bg-white transition-all w-full sm:w-auto text-center">
-            See Pricing →
-          </a>
-        </div>
-        <p className="text-[10px] text-[#8fa3bd] font-black uppercase tracking-widest mb-8">No credit card · Free forever · Upgrade anytime</p>
-      </div>
-      {/* Premium Pricing Section */}
-      <div id="pricing" className="max-w-6xl mx-auto px-8 pb-12">
-        <div className="relative overflow-hidden rounded-[2rem] border border-[#c8d7ec] bg-white shadow-[0_28px_80px_rgba(43,76,126,0.16)]">
-          <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#2563eb] via-[#0ea5e9] to-[#14b8a6]" />
-          <div className="px-6 md:px-10 pt-9 pb-6 text-center">
-            <p className="text-[10px] font-black uppercase tracking-[0.32em] text-[#3978d8] mb-3">
-              Pricing Plans
-            </p>
-            <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tight text-[#172033] mb-3">
-              Start Free. Upgrade When Work Grows.
-            </h2>
-            <p className="text-sm md:text-base text-[#5f6f89] max-w-2xl mx-auto leading-relaxed">
-              Built for company data entry, freelancers, client records, inventory, reports, and AI-generated sheets.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 px-6 md:px-10 pb-8">
-            <div className="rounded-2xl border border-[#d8e4f3] bg-[#f7fbff] p-6 text-left shadow-sm">
-              <p className="text-[10px] font-black uppercase tracking-[0.28em] text-[#5f6f89] mb-4">Free</p>
-              <div className="flex items-end gap-1 mb-2">
-                <span className="text-4xl font-black text-[#172033]">$0</span>
-                <span className="text-xs font-black text-[#5f6f89] mb-1 uppercase">forever</span>
-              </div>
-              <p className="text-[11px] text-[#5f6f89] mb-5">For testing and small personal work.</p>
-              {["4 lifetime tables", "2 AI table generations", "PDF and Excel export", "Google login"].map((f, i) => (
-                <p key={i} className="text-[11px] text-[#36516f] font-bold mt-2">{f}</p>
-              ))}
-              <button onClick={onLogin} className="mt-6 w-full rounded-xl border border-[#3978d8]/30 bg-white px-4 py-3 text-[11px] font-black uppercase tracking-widest text-[#2457d6] transition-all hover:bg-[#eaf2ff]">
-                Start Free
-              </button>
+    <div className="min-h-screen bg-[#eef4ff] text-[#172033] font-sans" style={{ fontFamily: "'DM Mono','Fira Mono',monospace" }}>
+      <main className="mx-auto w-full max-w-[1480px] px-4 pb-10 pt-4 sm:px-6 lg:px-8">
+        <section className="relative overflow-hidden rounded-[2rem] border border-[#c8d7ec] bg-white/78 p-4 shadow-[0_30px_95px_rgba(43,76,126,0.14)] backdrop-blur-xl sm:p-6 lg:p-8">
+          <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#2563eb] via-[#0ea5e9] to-[#16a34a]" />
+          <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="mb-2 text-[10px] font-black uppercase tracking-[0.34em] text-[#3978d8]">SheetMind Plans</p>
+              <h1 className="max-w-3xl text-2xl font-black uppercase tracking-tight text-[#172033] sm:text-3xl lg:text-4xl">
+                Choose how you want to work
+              </h1>
+              <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[#5f6f89]">
+                Pick a plan first. Free users can start instantly; premium users can unlock faster data-entry workflows for client, office, and business records.
+              </p>
             </div>
-
-            <div className="relative rounded-2xl border border-[#2563eb]/35 bg-gradient-to-br from-[#0f2f66] via-[#174c94] to-[#0f766e] p-6 text-left text-white shadow-[0_24px_60px_rgba(37,99,235,0.28)]">
-              <div className="absolute right-4 top-4 rounded-full bg-white/15 px-3 py-1 text-[8px] font-black uppercase tracking-widest text-white">Best Value</div>
-              <p className="text-[10px] font-black uppercase tracking-[0.28em] text-[#bde7ff] mb-4">Pro Monthly</p>
-              <div className="flex items-end gap-1 mb-2">
-                <span className="text-4xl font-black">$3</span>
-                <span className="text-xs font-black text-[#bde7ff] mb-1 uppercase">per month</span>
-              </div>
-              <p className="text-[11px] text-[#d9f3ff] mb-5">Around 300 BDT/month for serious data work.</p>
-              {["Unlimited tables", "Unlimited AI table generation", "No free-plan limit", "Ad-free workspace", "Priority support"].map((f, i) => (
-                <p key={i} className="text-[11px] font-bold text-white/90 mt-2">{f}</p>
-              ))}
-              <a href={LEMON_WEB_LINK} target="_blank" rel="noopener noreferrer" className="mt-6 flex w-full items-center justify-center rounded-xl bg-white px-4 py-3 text-[11px] font-black uppercase tracking-widest text-[#174c94] transition-all hover:bg-[#eaf7ff]">
-                Upgrade Monthly
-              </a>
-            </div>
-
-            <div className="rounded-2xl border border-[#d8e4f3] bg-white p-6 text-left shadow-sm">
-              <p className="text-[10px] font-black uppercase tracking-[0.28em] text-[#0f766e] mb-4">App Lifetime</p>
-              <div className="flex items-end gap-1 mb-2">
-                <span className="text-4xl font-black text-[#172033]">$15</span>
-                <span className="text-xs font-black text-[#5f6f89] mb-1 uppercase">one time</span>
-              </div>
-              <p className="text-[11px] text-[#5f6f89] mb-5">For users who want the mobile app package.</p>
-              {["Android APK", "All Pro features", "Offline support", "Free updates", "One-time payment"].map((f, i) => (
-                <p key={i} className="text-[11px] text-[#36516f] font-bold mt-2">{f}</p>
-              ))}
-              <a href={LEMON_APP_LINK} target="_blank" rel="noopener noreferrer" className="mt-6 flex w-full items-center justify-center rounded-xl border border-[#0f766e]/25 bg-[#ecfdf8] px-4 py-3 text-[11px] font-black uppercase tracking-widest text-[#0f766e] transition-all hover:bg-[#d9fff2]">
-                Get Lifetime App
-              </a>
+            <div className="rounded-2xl border border-[#d8e4f3] bg-[#f7fbff] px-4 py-3 text-left sm:text-right">
+              <p className="text-[9px] font-black uppercase tracking-[0.24em] text-[#8aa0bd]">Built for</p>
+              <p className="mt-1 text-[11px] font-black uppercase tracking-widest text-[#36516f]">Freelancers, offices, teams</p>
             </div>
           </div>
 
-          <div className="border-t border-[#d8e4f3] bg-[#f7fbff] px-6 py-4 text-center">
-            <p className="text-[10px] font-black uppercase tracking-widest text-[#36516f]">
-              Bangladesh users can pay with bKash: 300 BDT/month. Admin approval activates Premium.
-            </p>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
+            {plans.map((plan, index) => <PlanCard key={plan.id} plan={plan} index={index} />)}
           </div>
-        </div>
-      </div>
+        </section>
 
-      <div className="max-w-5xl mx-auto px-6 py-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-        {features.map((f, i) => (
-          <div key={i} className={`p-6 rounded-[1.75rem] border border-[#c8d7ec] bg-white shadow-sm hover:-translate-y-1 transition-all duration-200`}>
-            <div className="text-3xl mb-3">{f.icon}</div>
-            <h3 className="font-black text-sm uppercase tracking-wide mb-2 text-[#172033]">{f.title}</h3>
-            <p className="text-xs leading-relaxed text-[#5f6f89]">{f.desc}</p>
-          </div>
-        ))}
-      </div>
+        <section className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-3">
+          {[
+            {
+              title: "Data Entry Without Friction",
+              body: "Create clean records, edit cells quickly, save work to the cloud, and export files when clients ask for Excel or PDF.",
+            },
+            {
+              title: "Made For Client Work",
+              body: "Use it for inventory, payroll, CRM, student lists, project schedules, invoices, and daily office reports.",
+            },
+            {
+              title: "Simple Upgrade Path",
+              body: "Start free, then move to monthly, yearly, desktop, or phone app plans when your work volume grows.",
+            },
+          ].map((item) => (
+            <div key={item.title} className="rounded-[1.5rem] border border-[#c8d7ec] bg-white p-6 shadow-[0_18px_45px_rgba(43,76,126,0.09)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_24px_65px_rgba(43,76,126,0.14)]">
+              <h2 className="text-sm font-black uppercase tracking-[0.18em] text-[#2457d6]">{item.title}</h2>
+              <p className="mt-3 text-xs leading-relaxed text-[#5f6f89]">{item.body}</p>
+            </div>
+          ))}
+        </section>
 
-      <footer className={`border-t ${isDark ? "border-white/5" : "border-slate-200"} py-8 text-center`}>
-        <p className={`text-[10px] font-black uppercase tracking-[0.3em] ${sub}`}>SheetMind Pro · v15.0</p>
-      </footer>
+        <section className="mt-6 rounded-[1.5rem] border border-[#c8d7ec] bg-[#f7fbff] p-5 text-center shadow-sm">
+          <p className="text-[10px] font-black uppercase tracking-[0.28em] text-[#36516f]">
+            Bangladesh users can pay with bKash after choosing a premium plan. Admin approval activates Premium.
+          </p>
+          <a href={SUPPORT_LINK} className="mt-3 inline-flex rounded-xl border border-[#3978d8]/20 bg-white px-4 py-2 text-[10px] font-black uppercase tracking-widest text-[#2457d6] transition-all hover:-translate-y-0.5 hover:bg-[#eef5ff]">Payment Support</a>
+        </section>
+      </main>
     </div>
   );
 }
-
-// ============================================================
-// ADMIN PANEL
 // ============================================================
 
 function AdminPanel({ onClose, isDark, currentUser }) {
@@ -691,7 +729,7 @@ function AdminPanel({ onClose, isDark, currentUser }) {
         premiumPlan: "monthly", premiumExpiry: expiry,
         premiumGrantedAt: serverTimestamp(), premiumGrantedBy: "admin",
       }, { merge: true });
-      await setDoc(doc(db, "SHEETMINDs", u.uid), { isPremium: true }, { merge: true });
+      await setDoc(doc(db, "spreadsheets", u.uid), { isPremium: true }, { merge: true });
       setActionMsg(`✅ ${u.email} is now Premium!`);
       fetchAllUsers(); setTimeout(() => setActionMsg(""), 3000);
     } catch (err) { setActionMsg("❌ " + err.message); }
@@ -702,7 +740,7 @@ function AdminPanel({ onClose, isDark, currentUser }) {
     if (!db) return;
     try {
       await setDoc(doc(db, "users", u.uid), { isPremium: false, plan: "free" }, { merge: true });
-      await setDoc(doc(db, "SHEETMINDs", u.uid), { isPremium: false }, { merge: true });
+      await setDoc(doc(db, "spreadsheets", u.uid), { isPremium: false }, { merge: true });
       setActionMsg(`⚠️ Premium revoked for ${u.email}`);
       fetchAllUsers(); setTimeout(() => setActionMsg(""), 3000);
     } catch (err) { setActionMsg("❌ " + err.message); }
@@ -719,7 +757,7 @@ function AdminPanel({ onClose, isDark, currentUser }) {
         premiumGrantedAt: serverTimestamp(), premiumGrantedBy: "admin_bkash",
         paymentStatus: "approved",
       }, { merge: true });
-      await setDoc(doc(db, "SHEETMINDs", payment.uid), { isPremium: true }, { merge: true });
+      await setDoc(doc(db, "spreadsheets", payment.uid), { isPremium: true }, { merge: true });
       await setDoc(doc(db, "payment_requests", payment.docId), {
         status: "approved", approvedAt: serverTimestamp(), approvedBy: currentUser?.email,
       }, { merge: true });
@@ -1175,7 +1213,7 @@ function ProGateModal({ message, onUpgrade, onClose, isDark, tabCount }) {
 
           <button onClick={onUpgrade}
             className="w-full py-3.5 rounded-2xl font-black text-sm bg-gradient-to-r from-yellow-500 to-amber-400 hover:from-yellow-400 hover:to-amber-300 text-slate-900 transition-all shadow-lg shadow-yellow-900/20 mb-3">
-            ⭐ Upgrade to Pro — 300 BDT/month
+            ⭐ Upgrade to Pro — 640 BDT/month
           </button>
           <button onClick={onClose}
             className={`w-full py-3 rounded-2xl font-black text-xs border transition-all ${isDark ? "border-yellow-900/40 hover:bg-yellow-500/10 text-blue-400" : "border-blue-200 hover:bg-blue-50 text-slate-500"}`}>
@@ -1200,8 +1238,8 @@ function UpgradeModal({ onClose, isDark, currentUser }) {
   const [copied, setCopied] = useState(false);
 
   const PLANS = {
-    monthly: { label: "Monthly", bdtPrice: 300, usdPrice: 3, period: "month", months: 1 },
-    yearly:  { label: "Yearly",  bdtPrice: 2500, usdPrice: 25, period: "year", months: 12, save: "Save 30%" },
+    monthly: { label: "Monthly", bdtPrice: 640, usdPrice: 5, period: "month", months: 1, lemonLink: LEMON_MONTHLY_LINK },
+    yearly:  { label: "Yearly",  bdtPrice: 3200, usdPrice: 25, period: "year", months: 12, save: "Save 30%", lemonLink: LEMON_YEARLY_LINK },
   };
   const selectedPlan = PLANS[plan];
 
@@ -1301,6 +1339,7 @@ function UpgradeModal({ onClose, isDark, currentUser }) {
             <p className="text-[10px] font-black text-blue-400 uppercase tracking-wider">⏳ Admin Approval Pending</p>
             <p className={`text-[9px] ${sub} mt-1`}>সাধারণত কয়েক ঘণ্টার মধ্যে approve হয়।</p>
           </div>
+          <a href={SUPPORT_LINK} className={`mb-3 flex w-full items-center justify-center rounded-2xl border py-3 text-[11px] font-black uppercase tracking-widest transition-all ${isDark ? "border-blue-500/20 text-blue-400 hover:bg-blue-500/10" : "border-blue-200 text-blue-600 hover:bg-blue-50"}`}>Payment Support</a>
           <button onClick={onClose}
             className="w-full py-3 rounded-2xl font-black text-sm bg-gradient-to-r from-yellow-500 to-amber-400 hover:from-yellow-400 hover:to-amber-300 text-slate-900 transition-all">
             বন্ধ করো
@@ -1381,7 +1420,7 @@ function UpgradeModal({ onClose, isDark, currentUser }) {
  
               {/* Card Payment Button */}
               <a
-                href={LEMON_WEB_LINK}
+                href={selectedPlan.lemonLink || LEMON_MONTHLY_LINK}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full py-4 rounded-2xl font-black text-sm uppercase tracking-widest transition-all flex items-center justify-center gap-2 shadow-lg border border-blue-500/30 hover:border-blue-400/60"
@@ -1389,8 +1428,9 @@ function UpgradeModal({ onClose, isDark, currentUser }) {
                 💳 Pay with Card (International)
               </a>
               <p className={`text-[9px] ${sub} text-center mt-1`}>
-                Visa, Mastercard, PayPal — Instant activation
+                Visa, Mastercard, PayPal - automatic activation after payment confirmation
               </p>
+              <a href={SUPPORT_LINK} className={`mt-3 flex w-full items-center justify-center rounded-xl border py-2 text-[10px] font-black uppercase tracking-widest transition-all ${isDark ? "border-blue-500/20 text-blue-400 hover:bg-blue-500/10" : "border-blue-200 text-blue-600 hover:bg-blue-50"}`}>Payment Support</a>
             </>
           )}
 
@@ -2398,7 +2438,7 @@ function App() {
     } catch (e) {}
     if (currentUser && db) {
       try {
-        await setDoc(doc(db, "SHEETMINDs", currentUser.uid), {
+        await setDoc(doc(db, "spreadsheets", currentUser.uid), {
           tabs:            tabsData,
           history:         histData,
           tableCreationLog: creationLog,
@@ -2430,7 +2470,7 @@ function App() {
   const loadUserDataFromFirestore = useCallback((uid) => {
     if (firestoreUnsubRef.current) firestoreUnsubRef.current();
     if (!db) { loadFromLocalStorage(); return; }
-    const userDocRef = doc(db, "SHEETMINDs", uid);
+    const userDocRef = doc(db, "spreadsheets", uid);
     const unsub = onSnapshot(userDocRef, (snap) => {
       if (snap.exists()) {
         const data = snap.data();
