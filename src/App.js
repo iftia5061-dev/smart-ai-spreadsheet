@@ -1238,8 +1238,8 @@ function UpgradeModal({ onClose, isDark, currentUser }) {
   const [copied, setCopied] = useState(false);
 
   const PLANS = {
-    monthly: { label: "Monthly", bdtPrice: 640, usdPrice: 5, period: "month", months: 1, lemonLink: LEMON_MONTHLY_LINK },
-    yearly:  { label: "Yearly",  bdtPrice: 3200, usdPrice: 25, period: "year", months: 12, save: "Save 30%", lemonLink: LEMON_YEARLY_LINK },
+    monthly: { label: "Monthly", bdtPrice: 613, usdPrice: 5, period: "month", months: 1, lemonLink: LEMON_MONTHLY_LINK },
+    yearly:  { label: "Yearly",  bdtPrice: 6014, usdPrice: 49, period: "year", months: 12, save: "Save 30%", lemonLink: LEMON_YEARLY_LINK },
   };
   const selectedPlan = PLANS[plan];
 
