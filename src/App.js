@@ -650,6 +650,11 @@ function LandingPage({ onLogin, isDark }) {
             Bangladesh users can pay with bKash after choosing a premium plan. Admin approval activates Premium.
           </p>
           <a href={SUPPORT_LINK} className="mt-3 inline-flex rounded-xl border border-[#3978d8]/20 bg-white px-4 py-2 text-[10px] font-black uppercase tracking-widest text-[#2457d6] transition-all hover:-translate-y-0.5 hover:bg-[#eef5ff]">Payment Support</a>
+          
+            <a href="/terms.html" target="_blank" rel="noopener" className="mt-3 inline-flex rounded-xl border border-[#3978d8]/20 bg-white px-4 py-2 text-[10px] font-black uppercase tracking-widest text-[#2457d6] transition-all hover:-translate-y-0.5 hover:bg-[#eef5ff]">Terms of Service</a>
+            <a href="/privacy.html" target="_blank" rel="noopener" className="mt-3 inline-flex rounded-xl border border-[#3978d8]/20 bg-white px-4 py-2 text-[10px] font-black uppercase tracking-widest text-[#2457d6] transition-all hover:-translate-y-0.5 hover:bg-[#eef5ff]">Privacy Policy</a>
+            <a href="/refund.html" target="_blank" rel="noopener" className="mt-3 inline-flex rounded-xl border border-[#3978d8]/20 bg-white px-4 py-2 text-[10px] font-black uppercase tracking-widest text-[#2457d6] transition-all hover:-translate-y-0.5 hover:bg-[#eef5ff]">Refund Policy</a>
+          
         </section>
       </main>
     </div>

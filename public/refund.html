@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Refund Policy — SheetMind</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #05090f;
+    --surface: #0a1220;
+    --border: #1a2a40;
+    --accent: #00ffaa;
+    --accent2: #00d4ff;
+    --text: #e2eaf5;
+    --muted: #6b8299;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; -webkit-scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.8;
+    min-height: 100vh;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,255,170,0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,255,170,0.02) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+  header {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(5,9,15,0.85);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    padding: 18px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #00d4ff, #7c3aed);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-decoration: none;
+  }
+  .nav-links { display: flex; gap: 24px; }
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+  .nav-links a.active { color: var(--accent); }
+  main {
+    position: relative;
+    z-index: 1;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 60px 40px 100px;
+  }
+  .page-tag {
+    display: inline-block;
+    background: rgba(0,255,170,0.08);
+    border: 1px solid rgba(0,255,170,0.2);
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(32px, 5vw, 52px);
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 16px;
+    background: linear-gradient(135deg, #fff 40%, var(--accent));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .meta {
+    color: var(--muted);
+    font-size: 14px;
+    margin-bottom: 56px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section {
+    margin-bottom: 48px;
+    padding: 32px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .section::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 100%;
+    background: linear-gradient(180deg, var(--accent), var(--accent2));
+    border-radius: 3px 0 0 3px;
+  }
+  .section-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 16px;
+  }
+  p { color: #9ab0c8; margin-bottom: 12px; }
+  ul { padding-left: 20px; color: #9ab0c8; }
+  ul li { margin-bottom: 8px; }
+  strong { color: var(--text); }
+  a { color: var(--accent2); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .highlight-box {
+    background: rgba(0,255,170,0.05);
+    border: 1px solid rgba(0,255,170,0.15);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 48px;
+    color: #9ab0c8;
+    font-size: 15px;
+  }
+  .guarantee-box {
+    background: linear-gradient(135deg, rgba(0,255,170,0.08), rgba(0,212,255,0.08));
+    border: 1px solid rgba(0,255,170,0.2);
+    border-radius: 16px;
+    padding: 32px;
+    margin-bottom: 48px;
+    text-align: center;
+  }
+  .guarantee-box .big { font-family: 'Syne', sans-serif; font-size: 36px; font-weight: 800; color: var(--accent); }
+  .guarantee-box p { color: #9ab0c8; margin-top: 8px; }
+  footer {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 32px;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 13px;
+  }
+  footer a { color: var(--accent2); text-decoration: none; }
+</style>
+</head>
+<body>
+<header>
+  <a class="logo" href="#">SheetMind</a>
+  <nav class="nav-links">
+    <a href="terms.html">Terms</a>
+    <a href="privacy.html">Privacy</a>
+    <a href="refund.html" class="active">Refund</a>
+  </nav>
+</header>
+
+<main>
+  <div class="page-tag">Refund</div>
+  <h1>Refund Policy</h1>
+  <p class="meta">Last updated: June 4, 2026 &nbsp;·&nbsp; Effective immediately</p>
+
+  <div class="highlight-box">
+    We want you to be completely satisfied with SheetMind. If you're not happy, we're here to help.
+  </div>
+
+  <div class="guarantee-box">
+    <div class="big">7-Day Money Back</div>
+    <p>We offer a full refund within 7 days of your first purchase — no questions asked.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-num">01</div>
+    <h2>Eligibility for Refund</h2>
+    <p>You are eligible for a full refund if:</p>
+    <ul>
+      <li>Your refund request is made within <strong>7 days</strong> of your initial subscription payment</li>
+      <li>You have not violated our Terms of Service</li>
+      <li>This is your first refund request for SheetMind</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <div class="section-num">02</div>
+    <h2>Non-Refundable Cases</h2>
+    <p>Refunds will <strong>not</strong> be issued for:</p>
+    <ul>
+      <li>Requests made after the 7-day window</li>
+      <li>Renewal charges (please cancel before your renewal date)</li>
+      <li>Accounts terminated due to Terms of Service violations</li>
+      <li>Partial months or unused subscription periods after the 7-day window</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <div class="section-num">03</div>
+    <h2>How to Request a Refund</h2>
+    <p>To request a refund, contact us within 7 days of your purchase:</p>
+    <ul>
+      <li>Email us at: <a href="mailto:iftia5061@gmail.com">iftia5061@gmail.com</a></li>
+      <li>Or reach out via LinkedIn: <a href="https://www.linkedin.com/in/ifti-ahmed-dev/" target="_blank" rel="noopener">ifti-ahmed-dev</a></li>
+      <li>Include your email address and order/transaction ID</li>
+      <li>We will process your refund within <strong>5-7 business days</strong></li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <div class="section-num">04</div>
+    <h2>Cancellation</h2>
+    <p>You can cancel your subscription at any time. Cancellation will take effect at the end of your current billing period — you will continue to have access until then.</p>
+    <p>Cancelling a subscription does not automatically trigger a refund unless it is within the 7-day refund window.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-num">05</div>
+    <h2>Contact Us</h2>
+    <p>For refund requests or billing questions:</p>
+    <ul>
+      <li>Email: <a href="mailto:iftia5061@gmail.com">iftia5061@gmail.com</a></li>
+      <li>LinkedIn: <a href="https://www.linkedin.com/in/ifti-ahmed-dev/" target="_blank" rel="noopener">ifti-ahmed-dev</a></li>
+    </ul>
+  </div>
+</main>
+
+<footer>
+  <p>&copy; 2026 SheetMind. All rights reserved. &nbsp;·&nbsp; <a href="terms.html">Terms of Service</a> &nbsp;·&nbsp; <a href="privacy.html">Privacy Policy</a></p>
+</footer>
+</body>
+</html>

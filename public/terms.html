@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Terms of Service — SheetMind</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #05090f;
+    --surface: #0a1220;
+    --border: #1a2a40;
+    --accent: #00d4ff;
+    --accent2: #7c3aed;
+    --text: #e2eaf5;
+    --muted: #6b8299;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; -webkit-scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.8;
+    min-height: 100vh;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+  header {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(5,9,15,0.85);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    padding: 18px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-decoration: none;
+  }
+  .nav-links { display: flex; gap: 24px; }
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+  .nav-links a.active { color: var(--accent); }
+
+  main {
+    position: relative;
+    z-index: 1;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 60px 40px 100px;
+  }
+  .page-tag {
+    display: inline-block;
+    background: rgba(0,212,255,0.1);
+    border: 1px solid rgba(0,212,255,0.25);
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(32px, 5vw, 52px);
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 16px;
+    background: linear-gradient(135deg, #fff 40%, var(--accent));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .meta {
+    color: var(--muted);
+    font-size: 14px;
+    margin-bottom: 56px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section {
+    margin-bottom: 48px;
+    padding: 32px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .section::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 100%;
+    background: linear-gradient(180deg, var(--accent), var(--accent2));
+    border-radius: 3px 0 0 3px;
+  }
+  .section-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 16px;
+  }
+  p { color: #9ab0c8; margin-bottom: 12px; }
+  ul { padding-left: 20px; color: #9ab0c8; }
+  ul li { margin-bottom: 8px; }
+  strong { color: var(--text); }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .highlight-box {
+    background: rgba(0,212,255,0.06);
+    border: 1px solid rgba(0,212,255,0.15);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 48px;
+    color: #9ab0c8;
+    font-size: 15px;
+  }
+  footer {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 32px;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 13px;
+  }
+  footer a { color: var(--accent); text-decoration: none; }
+</style>
+</head>
+<body>
+<header>
+  <a class="logo" href="#">SheetMind</a>
+  <nav class="nav-links">
+    <a href="terms.html" class="active">Terms</a>
+    <a href="privacy.html">Privacy</a>
+    <a href="refund.html">Refund</a>
+  </nav>
+</header>
+
+<main>
+  <div class="page-tag">Legal</div>
+  <h1>Terms of Service</h1>
+  <p class="meta">Last updated: June 4, 2026 &nbsp;·&nbsp; Effective immediately</p>
+
+  <div class="highlight-box">
+    Please read these Terms of Service carefully before using SheetMind. By accessing or using our application, you agree to be bound by these terms.
+  </div>
+
+  <div class="section">
+    <div class="section-num">01</div>
+    <h2>Acceptance of Terms</h2>
+    <p>By downloading, installing, or using SheetMind ("the Application"), you agree to these Terms of Service. If you do not agree, please do not use the Application.</p>
+    <p>These terms apply to all users of SheetMind, including free trial users and paid subscribers.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-num">02</div>
+    <h2>Description of Service</h2>
+    <p>SheetMind is an AI-powered spreadsheet desktop application that provides:</p>
+    <ul>
+      <li>Spreadsheet creation, editing, and management</li>
+      <li>AI-assisted data analysis and suggestions</li>
+      <li>Chart and visualization generation</li>
+      <li>PDF and Excel export functionality</li>
+      <li>Form view and data entry features</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <div class="section-num">03</div>
+    <h2>Subscription & Payment</h2>
+    <p>SheetMind operates on a <strong>subscription-based model</strong>. By subscribing, you agree to:</p>
+    <ul>
+      <li>Pay the applicable subscription fee on a recurring basis (monthly or annually)</li>
+      <li>Provide accurate and complete billing information</li>
+      <li>Authorize us to charge your payment method automatically at each renewal</li>
+    </ul>
+    <p>Subscription fees are non-refundable except as described in our <a href="refund.html">Refund Policy</a>.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-num">04</div>
+    <h2>Acceptable Use</h2>
+    <p>You agree not to:</p>
+    <ul>
+      <li>Reverse engineer, decompile, or disassemble the Application</li>
+      <li>Use the Application for any unlawful purpose</li>
+      <li>Share, resell, or sublicense your account to others</li>
+      <li>Attempt to gain unauthorized access to our systems</li>
+      <li>Upload malicious files or content through the Application</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <div class="section-num">05</div>
+    <h2>Intellectual Property</h2>
+    <p>SheetMind and all its content, features, and functionality are owned by MD. Aminul Islam and are protected by applicable intellectual property laws.</p>
+    <p>Your data and spreadsheets remain your property. We do not claim ownership of any content you create using SheetMind.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-num">06</div>
+    <h2>Disclaimer of Warranties</h2>
+    <p>SheetMind is provided <strong>"as is"</strong> without warranties of any kind. We do not guarantee that the Application will be error-free, uninterrupted, or meet your specific requirements.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-num">07</div>
+    <h2>Limitation of Liability</h2>
+    <p>To the maximum extent permitted by law, SheetMind shall not be liable for any indirect, incidental, special, or consequential damages arising from your use of the Application.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-num">08</div>
+    <h2>Termination</h2>
+    <p>We reserve the right to suspend or terminate your account if you violate these Terms of Service. You may cancel your subscription at any time through your account settings.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-num">09</div>
+    <h2>Changes to Terms</h2>
+    <p>We may update these terms from time to time. We will notify you of significant changes via email or in-app notification. Continued use of SheetMind after changes constitutes acceptance of the new terms.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-num">10</div>
+    <h2>Contact Us</h2>
+    <p>If you have any questions about these Terms, please contact us:</p>
+    <ul>
+      <li>Email: <a href="mailto:iftia5061@gmail.com">iftia5061@gmail.com</a></li>
+      <li>LinkedIn: <a href="https://www.linkedin.com/in/ifti-ahmed-dev/" target="_blank" rel="noopener">ifti-ahmed-dev</a></li>
+    </ul>
+  </div>
+</main>
+
+<footer>
+  <p>&copy; 2026 SheetMind. All rights reserved. &nbsp;·&nbsp; <a href="privacy.html">Privacy Policy</a> &nbsp;·&nbsp; <a href="refund.html">Refund Policy</a></p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Privacy Policy — SheetMind</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #05090f;
+    --surface: #0a1220;
+    --border: #1a2a40;
+    --accent: #00d4ff;
+    --accent2: #7c3aed;
+    --text: #e2eaf5;
+    --muted: #6b8299;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; -webkit-scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.8;
+    min-height: 100vh;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+  header {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(5,9,15,0.85);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    padding: 18px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-decoration: none;
+  }
+  .nav-links { display: flex; gap: 24px; }
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+  .nav-links a.active { color: var(--accent); }
+  main {
+    position: relative;
+    z-index: 1;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 60px 40px 100px;
+  }
+  .page-tag {
+    display: inline-block;
+    background: rgba(124,58,237,0.1);
+    border: 1px solid rgba(124,58,237,0.25);
+    color: #a78bfa;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(32px, 5vw, 52px);
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 16px;
+    background: linear-gradient(135deg, #fff 40%, #a78bfa);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .meta {
+    color: var(--muted);
+    font-size: 14px;
+    margin-bottom: 56px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section {
+    margin-bottom: 48px;
+    padding: 32px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .section::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 100%;
+    background: linear-gradient(180deg, #a78bfa, var(--accent));
+    border-radius: 3px 0 0 3px;
+  }
+  .section-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #a78bfa;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 16px;
+  }
+  p { color: #9ab0c8; margin-bottom: 12px; }
+  ul { padding-left: 20px; color: #9ab0c8; }
+  ul li { margin-bottom: 8px; }
+  strong { color: var(--text); }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .highlight-box {
+    background: rgba(124,58,237,0.06);
+    border: 1px solid rgba(124,58,237,0.15);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 48px;
+    color: #9ab0c8;
+    font-size: 15px;
+  }
+  footer {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 32px;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 13px;
+  }
+  footer a { color: var(--accent); text-decoration: none; }
+</style>
+</head>
+<body>
+<header>
+  <a class="logo" href="#">SheetMind</a>
+  <nav class="nav-links">
+    <a href="terms.html">Terms</a>
+    <a href="privacy.html" class="active">Privacy</a>
+    <a href="refund.html">Refund</a>
+  </nav>
+</header>
+
+<main>
+  <div class="page-tag">Privacy</div>
+  <h1>Privacy Policy</h1>
+  <p class="meta">Last updated: June 4, 2026 &nbsp;·&nbsp; Effective immediately</p>
+
+  <div class="highlight-box">
+    Your privacy matters to us. This policy explains what data we collect, how we use it, and your rights regarding your personal information.
+  </div>
+
+  <div class="section">
+    <div class="section-num">01</div>
+    <h2>Information We Collect</h2>
+    <p>We collect the following types of information:</p>
+    <ul>
+      <li><strong>Account Information:</strong> Name, email address when you register</li>
+      <li><strong>Payment Information:</strong> Processed securely through Lemon Squeezy — we do not store card details</li>
+      <li><strong>Usage Data:</strong> How you interact with the Application (features used, session duration)</li>
+      <li><strong>Device Information:</strong> Operating system, app version for support purposes</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <div class="section-num">02</div>
+    <h2>How We Use Your Information</h2>
+    <p>We use your information to:</p>
+    <ul>
+      <li>Provide and maintain the SheetMind service</li>
+      <li>Process your subscription payments</li>
+      <li>Send important service updates and notifications</li>
+      <li>Improve the Application based on usage patterns</li>
+      <li>Respond to your support requests</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <div class="section-num">03</div>
+    <h2>Your Data</h2>
+    <p>Your spreadsheets and files created within SheetMind are <strong>stored locally on your device</strong>. We do not upload or access your spreadsheet content without your explicit consent.</p>
+    <p>You retain full ownership of all data you create using SheetMind.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-num">04</div>
+    <h2>Data Sharing</h2>
+    <p>We do <strong>not sell</strong> your personal data. We may share data with:</p>
+    <ul>
+      <li><strong>Lemon Squeezy:</strong> Our payment processor, for billing purposes</li>
+      <li><strong>Legal authorities:</strong> Only when required by law</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <div class="section-num">05</div>
+    <h2>Cookies</h2>
+    <p>SheetMind desktop application does not use browser cookies. Our website may use essential cookies for session management only.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-num">06</div>
+    <h2>Data Security</h2>
+    <p>We implement industry-standard security measures to protect your personal information. However, no method of transmission over the internet is 100% secure.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-num">07</div>
+    <h2>Your Rights</h2>
+    <p>You have the right to:</p>
+    <ul>
+      <li>Access the personal data we hold about you</li>
+      <li>Request correction of inaccurate data</li>
+      <li>Request deletion of your account and data</li>
+      <li>Opt out of non-essential communications</li>
+    </ul>
+    <p>To exercise these rights, contact us via email or LinkedIn.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-num">08</div>
+    <h2>Children's Privacy</h2>
+    <p>SheetMind is not intended for children under 13. We do not knowingly collect personal information from children under 13.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-num">09</div>
+    <h2>Contact Us</h2>
+    <p>For privacy-related questions or requests:</p>
+    <ul>
+      <li>Email: <a href="mailto:iftia5061@gmail.com">iftia5061@gmail.com</a></li>
+      <li>LinkedIn: <a href="https://www.linkedin.com/in/ifti-ahmed-dev/" target="_blank" rel="noopener">ifti-ahmed-dev</a></li>
+    </ul>
+  </div>
+</main>
+
+<footer>
+  <p>&copy; 2026 SheetMind. All rights reserved. &nbsp;·&nbsp; <a href="terms.html">Terms of Service</a> &nbsp;·&nbsp; <a href="refund.html">Refund Policy</a></p>
+</footer>
+</body>
+</html>
