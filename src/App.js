@@ -591,7 +591,7 @@ function LandingPage({ onLogin, isDark }) {
     }
 
     return (
-      <a key={plan.id} href={plan.href} target="_blank" rel="noopener noreferrer" className="block h-full outline-none focus-visible:ring-4 focus-visible:ring-blue-300/50 rounded-[1.65rem]">
+      <a key={plan.id} href={plan.href} className="lemonsqueezy-button block h-full outline-none focus-visible:ring-4 focus-visible:ring-blue-300/50 rounded-[1.65rem]">
         {content}
       </a>
     );
