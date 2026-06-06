@@ -22,6 +22,16 @@ import {
   getDocs,
   increment,
 } from "firebase/firestore";
+import {
+  getDatabase,
+  ref,
+  set,
+  onValue,
+  onDisconnect,
+  serverTimestamp as rtServerTimestamp,
+  push,
+  remove,
+} from "firebase/database";
 import { jsPDF } from "jspdf";
 import { autoTable } from "jspdf-autotable";
 import * as XLSX from "xlsx";
@@ -57,6 +67,7 @@ const AUTOSAVE_DELAY = 1500;
 const AI_FREE_TABLE_LIMIT = 2;
 const AI_TABLE_ENDPOINT = "https://smart-ai-two-phi.vercel.app/api/ai-table";
 const ENABLE_AI_TABLE = true;
+const FREE_COLLAB_LIMIT = 3; // Free plan max collaborators
 // ↓ REPLACE with your real AdSense Publisher ID
 // Line 51-57 এ এই অংশটা replace করো:
 const ADSENSE_PUB_ID = "ca-pub-5628645711343874";
@@ -69,11 +80,12 @@ const AD_SLOTS = {
 // ============================================================
 // FIREBASE INIT
 // ============================================================
-let app, auth, db, provider;
+let app, auth, db, rtdb, provider;
 try {
   app = initializeApp(firebaseConfig);
   auth = getAuth(app);
   db = getFirestore(app);
+  rtdb = getDatabase(app);
   provider = new GoogleAuthProvider();
 } catch (e) {
   console.error("Firebase init error:", e);
@@ -2302,6 +2314,12 @@ function App() {
   const [undoStack,      setUndoStack]      = useState([]);
   const [redoStack,      setRedoStack]      = useState([]);
   const [frozenCols,     setFrozenCols]     = useState(1);  // কতটা column freeze
+  const [shareModalOpen,   setShareModalOpen]   = useState(false);
+  const [shareLink,        setShareLink]        = useState("");
+  const [shareId,          setShareId]          = useState(null);
+  const [collaborators,    setCollaborators]    = useState({});
+  const [isSharedView,     setIsSharedView]     = useState(false);
+  const [sharedTabData,    setSharedTabData]    = useState(null);
   const [showFindReplace, setShowFindReplace] = useState(false);
   const [hiddenRows,     setHiddenRows]     = useState(new Set());
   const [hiddenCols,     setHiddenCols]     = useState(new Set());
@@ -3007,6 +3025,153 @@ function App() {
     }
     return {};
   }, [conditionalRules]);
+  // ============================================================
+  // REAL-TIME COLLABORATION
+  // ============================================================
+
+  // Share current tab — creates a shared session
+  const handleShareTab = useCallback(async () => {
+    if (!user) { alert("Please login first!"); return; }
+
+    // Check free plan limit
+    if (!isPremium) {
+      const existingShares = await getDocs(
+        collection(db, "shared_tables")
+      ).catch(() => ({ size: 0 }));
+    }
+
+    try {
+      const newShareId = `share_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+      const shareData = {
+        id:        newShareId,
+        tabData:   activeTab,
+        ownerId:   user.uid,
+        ownerName: user.displayName || "User",
+        ownerEmail: user.email,
+        isPremium,
+        maxCollaborators: isPremium ? 999 : FREE_COLLAB_LIMIT,
+        createdAt: serverTimestamp(),
+        lastUpdated: serverTimestamp(),
+      };
+
+      await setDoc(doc(db, "shared_tables", newShareId), shareData);
+
+      // Set presence in Realtime DB
+      if (rtdb) {
+        const presenceRef = ref(rtdb, `presence/${newShareId}/${user.uid}`);
+        await set(presenceRef, {
+          name:   user.displayName || "User",
+          email:  user.email,
+          photo:  user.photoURL || "",
+          color:  `#${Math.floor(Math.random()*16777215).toString(16).padStart(6,"0")}`,
+          joinedAt: Date.now(),
+          activeCell: null,
+        });
+        onDisconnect(presenceRef).remove();
+      }
+
+      const link = `${window.location.origin}?share=${newShareId}`;
+      setShareId(newShareId);
+      setShareLink(link);
+      setShareModalOpen(true);
+
+      // Start syncing this tab to shared_tables
+      startSyncingSharedTab(newShareId);
+    } catch (err) {
+      console.error("Share error:", err);
+      alert("Failed to create share link.");
+    }
+  }, [user, isPremium, activeTab, db]);
+
+  // Sync active tab data to Firestore for collaborators
+  const startSyncingSharedTab = useCallback((sharedId) => {
+    if (!sharedId || !db) return;
+    setShareId(sharedId);
+  }, [db]);
+
+  // Auto-sync when tab changes and shareId exists
+  useEffect(() => {
+    if (!shareId || !db || !activeTab) return;
+    const timer = setTimeout(async () => {
+      try {
+        await setDoc(doc(db, "shared_tables", shareId), {
+          tabData: activeTab,
+          lastUpdated: serverTimestamp(),
+        }, { merge: true });
+      } catch (err) {}
+    }, 800);
+    return () => clearTimeout(timer);
+  }, [activeTab, shareId, db]);
+
+  // Join a shared table from URL
+  const handleJoinSharedTable = useCallback(async (sharedId) => {
+    if (!db) return;
+    try {
+      const sharedDoc = await getDoc(doc(db, "shared_tables", sharedId));
+      if (!sharedDoc.exists()) { alert("Shared table not found!"); return; }
+
+      const data = sharedDoc.data();
+
+      // Check collaborator limit
+      const presenceSnap = collaborators;
+      const count = Object.keys(presenceSnap).length;
+      if (!data.isPremium && count >= FREE_COLLAB_LIMIT) {
+        alert(`This shared table has reached the free plan limit of ${FREE_COLLAB_LIMIT} collaborators.\n\nAsk the owner to upgrade to Premium for unlimited collaborators.`);
+        return;
+      }
+
+      setIsSharedView(true);
+
+      // Listen to real-time updates
+      const unsubShared = onSnapshot(doc(db, "shared_tables", sharedId), (snap) => {
+        if (snap.exists()) {
+          const d = snap.data();
+          if (d.tabData) {
+            setTabs(prev => {
+              const exists = prev.find(t => t.id === d.tabData.id);
+              if (exists) {
+                return prev.map(t => t.id === d.tabData.id ? { ...t, ...d.tabData } : t);
+              }
+              return [...prev, d.tabData];
+            });
+          }
+        }
+      });
+
+      // Set own presence
+      if (rtdb && user) {
+        const presenceRef = ref(rtdb, `presence/${sharedId}/${user.uid}`);
+        await set(presenceRef, {
+          name:   user.displayName || "Viewer",
+          email:  user.email || "",
+          photo:  user.photoURL || "",
+          color:  `#${Math.floor(Math.random()*16777215).toString(16).padStart(6,"0")}`,
+          joinedAt: Date.now(),
+          activeCell: null,
+        });
+        onDisconnect(presenceRef).remove();
+      }
+
+      // Listen to presence
+      if (rtdb) {
+        const presRef = ref(rtdb, `presence/${sharedId}`);
+        onValue(presRef, (snap) => {
+          setCollaborators(snap.val() || {});
+        });
+      }
+
+      return () => unsubShared();
+    } catch (err) {
+      console.error("Join error:", err);
+    }
+  }, [db, rtdb, user, collaborators]);
+
+  // Check URL for share param on load
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const sharedId = params.get("share");
+    if (sharedId) handleJoinSharedTable(sharedId);
+  }, []);
   // ── Copy Cell ──
   const applyToolbarFormat = useCallback((fmt) => {
   if (!selectedCell) return;
@@ -3912,6 +4077,71 @@ const btnSuccess =
       <input type="file" ref={fileInputRef} onChange={handleFileUpload} className="hidden" accept=".csv,.xlsx,.xls" />
 
       {/* ======== MODALS ======== */}
+      {/* ====== SHARE MODAL ====== */}
+      {shareModalOpen && (
+        <div className="fixed inset-0 z-[300] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+          <div className={`w-full max-w-md rounded-[2rem] border shadow-2xl p-8 ${isDark ? "bg-[#0a1628] border-[#1e3a5f] text-slate-100" : "bg-white border-slate-200 text-slate-900"}`}>
+            <div className="flex justify-between items-center mb-6">
+              <div>
+                <h3 className="font-black text-lg uppercase">Share Table</h3>
+                <p className={`text-[10px] mt-1 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                  {isPremium ? "Unlimited collaborators" : `Free plan: max ${FREE_COLLAB_LIMIT} collaborators`}
+                </p>
+              </div>
+              <button onClick={() => setShareModalOpen(false)} className="text-xl hover:opacity-60">✕</button>
+            </div>
+
+            {/* Collaborators online */}
+            {Object.keys(collaborators).length > 0 && (
+              <div className={`mb-5 p-4 rounded-2xl border ${isDark ? "bg-[#070f1e] border-[#1e3a5f]" : "bg-slate-50 border-slate-200"}`}>
+                <p className={`text-[10px] font-black uppercase tracking-widest mb-3 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                  Online ({Object.keys(collaborators).length})
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {Object.values(collaborators).map((c, i) => (
+                    <div key={i} className="flex items-center gap-1.5 px-2 py-1 rounded-full text-[10px] font-black"
+                      style={{ backgroundColor: c.color + "20", border: `1px solid ${c.color}40`, color: c.color }}>
+                      <div className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: c.color }} />
+                      {c.name?.split(" ")[0] || "User"}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Share link */}
+            <div className={`p-4 rounded-2xl border mb-5 ${isDark ? "bg-[#070f1e] border-[#1e3a5f]" : "bg-slate-50 border-slate-200"}`}>
+              <p className={`text-[9px] font-black uppercase tracking-widest mb-2 ${isDark ? "text-slate-400" : "text-slate-500"}`}>Share Link</p>
+              <div className="flex gap-2">
+                <input
+                  readOnly
+                  value={shareLink}
+                  className={`flex-1 px-3 py-2 rounded-xl text-[11px] border outline-none font-mono ${isDark ? "bg-[#050d1f] border-[#1e3a5f] text-slate-300" : "bg-white border-slate-200"}`}
+                />
+                <button
+                  onClick={() => { navigator.clipboard.writeText(shareLink); alert("Link copied!"); }}
+                  className="px-4 py-2 rounded-xl font-black text-[10px] uppercase bg-blue-600 text-white hover:bg-blue-500 transition-all">
+                  Copy
+                </button>
+              </div>
+            </div>
+
+            {!isPremium && (
+              <div className={`p-3 rounded-xl border mb-4 ${isDark ? "border-amber-500/20 bg-amber-500/5" : "border-amber-200 bg-amber-50"}`}>
+                <p className="text-[10px] font-black text-amber-400 uppercase">⭐ Free Plan Limit</p>
+                <p className={`text-[10px] mt-1 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                  Max {FREE_COLLAB_LIMIT} collaborators. Upgrade for unlimited.
+                </p>
+              </div>
+            )}
+
+            <button onClick={() => setShareModalOpen(false)}
+              className={`w-full py-3 rounded-2xl font-black text-xs uppercase border transition-all ${isDark ? "border-[#1e3a5f] text-slate-400 hover:bg-white/5" : "border-slate-200 text-slate-500 hover:bg-slate-50"}`}>
+              Close
+            </button>
+          </div>
+        </div>
+      )}
       {showAdmin    && <AdminPanel onClose={() => setShowAdmin(false)} isDark={isDark} currentUser={user} />}
       {showUpgrade  && <UpgradeModal onClose={() => setShowUpgrade(false)} isDark={isDark} currentUser={user} />}
       {showAITable && (
@@ -4125,6 +4355,12 @@ const btnSuccess =
                   Admin
                 </button>
               )}
+              <button
+                onClick={handleShareTab}
+                className="px-2 py-1.5 rounded-lg font-black text-[9px] uppercase bg-emerald-500/10 hover:bg-emerald-500 border border-emerald-500/20 hover:border-emerald-500 text-emerald-400 hover:text-white transition-all duration-150"
+                title="Share & Collaborate">
+                Share
+              </button>
 
               <button onClick={() => setShowTemplates(true)}
                 className="px-2 py-1.5 rounded-lg font-black text-[9px] uppercase bg-emerald-500/10 hover:bg-emerald-500 border border-emerald-500/20 hover:border-emerald-500 text-emerald-400 hover:text-white transition-all duration-150"
@@ -4216,6 +4452,19 @@ const btnSuccess =
                       </button>
                     )}
                   </div>
+                  {/* Collaborator avatars */}
+                  {isActive && Object.keys(collaborators).length > 0 && (
+                    <div className="flex -space-x-1 mr-1">
+                      {Object.values(collaborators).slice(0, 3).map((c, i) => (
+                        <div key={i}
+                          className="w-4 h-4 rounded-full border border-white/20 flex items-center justify-center text-[6px] font-black text-white"
+                          style={{ backgroundColor: c.color }}
+                          title={c.name}>
+                          {c.name?.[0] || "?"}
+                        </div>
+                      ))}
+                    </div>
+                  )}
 
                   {isActive && (
                     <div className="absolute bottom-0 left-3 right-3 h-[2px] rounded-full"
