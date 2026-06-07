@@ -42,6 +42,7 @@ import React, { useState, useEffect, useRef, useCallback, useMemo } from "react"
 // ============================================================
 const firebaseConfig = {
   apiKey: "AIzaSyBFqaj-vl_W0sBAde_-XdbJPtKYI_tA3Wk",
+  databaseURL: "https://smart-sheet-pro-default-rtdb.firebaseio.com",
   authDomain: "smart-sheet-pro.firebaseapp.com",
   projectId: "smart-sheet-pro",
   storageBucket: "smart-sheet-pro.firebasestorage.app",
