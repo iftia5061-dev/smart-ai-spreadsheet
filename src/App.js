@@ -2321,6 +2321,10 @@ function App() {
   const [collaborators,    setCollaborators]    = useState({});
   const [isSharedView,     setIsSharedView]     = useState(false);
   const [sharedTabData,    setSharedTabData]    = useState(null);
+  const [sharePermissions, setSharePermissions] = useState({});
+  const [shareEmailInput,  setShareEmailInput]  = useState("");
+  const [shareRoleInput,   setShareRoleInput]   = useState("editor");
+  const [myShareRole,      setMyShareRole]      = useState("owner");
   const [showFindReplace, setShowFindReplace] = useState(false);
   const [hiddenRows,     setHiddenRows]     = useState(new Set());
   const [hiddenCols,     setHiddenCols]     = useState(new Set());
@@ -2370,6 +2374,7 @@ function App() {
   const setTableTitle = useCallback((title) => updateActiveTab({ title }),          [updateActiveTab]);
 
   const handleCellChange = useCallback((rIdx, col, value) => {
+    if (myShareRole === "viewer") return;
     setTabs(prev => prev.map(t => {
       if (t.id !== activeTabId) return t;
       const updatedRows = [...t.rows];
@@ -2380,7 +2385,7 @@ function App() {
       };
       return { ...t, rows: updatedRows };
     }));
-  }, [activeTabId]);
+  }, [activeTabId, myShareRole]);
 
   const applyCellFormat = useCallback((rIdx, col, fmt) => {
     setTabs(prev => prev.map(t => {
@@ -3031,15 +3036,34 @@ function App() {
   // ============================================================
 
   // Share current tab — creates a shared session
+  const handleAddPermission = useCallback(async (email, role) => {
+    if (!shareId || !db || !email) return;
+    const newPerms = { ...sharePermissions, [email.toLowerCase()]: role };
+    setSharePermissions(newPerms);
+    try {
+      await setDoc(doc(db, "shared_tables", shareId), {
+        permissions: newPerms,
+        lastUpdated: serverTimestamp(),
+      }, { merge: true });
+    } catch (err) { console.error("Permission error:", err); }
+  }, [shareId, db, sharePermissions]);
+
+  const handleRemovePermission = useCallback(async (email) => {
+    if (!shareId || !db) return;
+    const newPerms = { ...sharePermissions };
+    delete newPerms[email];
+    setSharePermissions(newPerms);
+    try {
+      await setDoc(doc(db, "shared_tables", shareId), {
+        permissions: newPerms,
+        lastUpdated: serverTimestamp(),
+      }, { merge: true });
+    } catch (err) { console.error("Remove permission error:", err); }
+  }, [shareId, db, sharePermissions]);
+
   const handleShareTab = useCallback(async () => {
     if (!user) { alert("Please login first!"); return; }
-
-    // Check free plan limit
-    if (!isPremium) {
-      const existingShares = await getDocs(
-        collection(db, "shared_tables")
-      ).catch(() => ({ size: 0 }));
-    }
+    if (!db) { alert("Database not connected!"); return; }
 
     try {
       const newShareId = `share_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
@@ -3051,6 +3075,7 @@ function App() {
         ownerEmail: user.email,
         isPremium,
         maxCollaborators: isPremium ? 999 : FREE_COLLAB_LIMIT,
+        permissions: {},
         createdAt: serverTimestamp(),
         lastUpdated: serverTimestamp(),
       };
@@ -3074,6 +3099,8 @@ function App() {
       const link = `${window.location.origin}?share=${newShareId}`;
       setShareId(newShareId);
       setShareLink(link);
+      setSharePermissions({});
+      setMyShareRole("owner");
       setShareModalOpen(true);
 
       // Start syncing this tab to shared_tables
@@ -4125,6 +4152,62 @@ const btnSuccess =
                   Copy
                 </button>
               </div>
+            </div>
+
+            {/* Add Email Permission */}
+            <div className={`p-4 rounded-2xl border mb-4 ${isDark ? "bg-[#070f1e] border-[#1e3a5f]" : "bg-slate-50 border-slate-200"}`}>
+              <p className={`text-[9px] font-black uppercase tracking-widest mb-3 ${isDark ? "text-slate-400" : "text-slate-500"}`}>Add People</p>
+              <div className="flex gap-2 mb-3">
+                <input
+                  type="email"
+                  placeholder="Enter email address"
+                  value={shareEmailInput}
+                  onChange={e => setShareEmailInput(e.target.value)}
+                  className={`flex-1 px-3 py-2 rounded-xl text-[11px] border outline-none ${isDark ? "bg-[#050d1f] border-[#1e3a5f] text-slate-300 placeholder-slate-600" : "bg-white border-slate-200"}`}
+                />
+                <select
+                  value={shareRoleInput}
+                  onChange={e => setShareRoleInput(e.target.value)}
+                  className={`px-3 py-2 rounded-xl text-[11px] border outline-none font-black ${isDark ? "bg-[#050d1f] border-[#1e3a5f] text-slate-300" : "bg-white border-slate-200"}`}>
+                  <option value="editor">Editor</option>
+                  <option value="viewer">Viewer</option>
+                </select>
+                <button
+                  onClick={() => {
+                    if (!shareEmailInput.trim()) return;
+                    handleAddPermission(shareEmailInput.trim(), shareRoleInput);
+                    setShareEmailInput("");
+                  }}
+                  className="px-4 py-2 rounded-xl font-black text-[10px] uppercase bg-blue-600 text-white hover:bg-blue-500 transition-all">
+                  Add
+                </button>
+              </div>
+              {Object.keys(sharePermissions).length > 0 && (
+                <div className="space-y-2">
+                  {Object.entries(sharePermissions).map(([email, role]) => (
+                    <div key={email} className={`flex items-center justify-between px-3 py-2 rounded-xl border ${isDark ? "border-[#1e3a5f] bg-[#050d1f]" : "border-slate-200 bg-white"}`}>
+                      <div>
+                        <p className={`text-[11px] font-bold ${isDark ? "text-slate-300" : "text-slate-700"}`}>{email}</p>
+                        <p className={`text-[9px] font-black uppercase ${role === "editor" ? "text-green-400" : "text-amber-400"}`}>{role}</p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <select
+                          value={role}
+                          onChange={e => handleAddPermission(email, e.target.value)}
+                          className={`px-2 py-1 rounded-lg text-[10px] border outline-none font-black ${isDark ? "bg-[#0a1628] border-[#1e3a5f] text-slate-300" : "bg-slate-50 border-slate-200"}`}>
+                          <option value="editor">Editor</option>
+                          <option value="viewer">Viewer</option>
+                        </select>
+                        <button
+                          onClick={() => handleRemovePermission(email)}
+                          className="text-red-400 hover:text-red-300 text-[11px] font-black px-2">
+                          ✕
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             {!isPremium && (
