@@ -3099,7 +3099,6 @@ function App() {
       const link = `${window.location.origin}?share=${newShareId}`;
       setShareId(newShareId);
       setShareLink(link);
-      setSharePermissions({});
       setMyShareRole("owner");
       setShareModalOpen(true);
 
@@ -3206,12 +3205,12 @@ function App() {
     }
   }, [db, rtdb, user, collaborators]);
 
-  // Check URL for share param on load
+  // Check URL for share param — user load হওয়ার পর call করো
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const sharedId = params.get("share");
-    if (sharedId) handleJoinSharedTable(sharedId);
-  }, []);
+    if (sharedId && user) handleJoinSharedTable(sharedId);
+  }, [user]);
   // ── Copy Cell ──
   const applyToolbarFormat = useCallback((fmt) => {
   if (!selectedCell) return;
