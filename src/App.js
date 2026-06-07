@@ -3117,20 +3117,21 @@ function App() {
     setShareId(sharedId);
   }, [db]);
 
-  // Auto-sync when tab changes and shareId exists
+  // Auto-sync when tab changes and shareId exists — works for owner AND editor
   useEffect(() => {
     if (!shareId || !db || !activeTab) return;
+    if (myShareRole === "viewer") return;
     const timer = setTimeout(async () => {
       try {
         await setDoc(doc(db, "shared_tables", shareId), {
           tabData: activeTab,
           lastUpdated: serverTimestamp(),
-          lastEditedBy: user?.email?.toLowerCase() || user?.uid || "unknown",
+          lastEditedBy: user?.uid || "unknown",
         }, { merge: true });
-      } catch (err) {}
-    }, 800);
+      } catch (err) { console.error("sync err:", err); }
+    }, 600);
     return () => clearTimeout(timer);
-  }, [activeTab, shareId, db]);
+  }, [activeTab, shareId, db, myShareRole, user]);
 
   // Join a shared table from URL
   const handleJoinSharedTable = useCallback(async (sharedId) => {
@@ -3141,40 +3142,28 @@ function App() {
 
       const data = sharedDoc.data();
 
-      // Check collaborator limit
-      const presenceSnap = collaborators;
-      const count = Object.keys(presenceSnap).length;
-      if (!data.isPremium && count >= FREE_COLLAB_LIMIT) {
-        alert(`This shared table has reached the free plan limit of ${FREE_COLLAB_LIMIT} collaborators.\n\nAsk the owner to upgrade to Premium for unlimited collaborators.`);
-        return;
-      }
-
       // Permission check
       const myEmail = user?.email?.toLowerCase() || "";
       const perms = data.permissions || {};
       let myRole = "viewer";
       if (data.ownerId === user?.uid) myRole = "owner";
       else if (perms[myEmail]) myRole = perms[myEmail];
-      else {
-        alert("You don't have permission to access this table.");
-        return;
-      }
       setMyShareRole(myRole);
       setSharePermissions(perms);
 
-      // Editor/owner can sync edits back
+      // Editor/owner shareId set করো — sync এর জন্য
       if (myRole === "editor" || myRole === "owner") {
         setShareId(sharedId);
       }
 
       setIsSharedView(true);
 
-      // Listen to real-time updates
+      // সবাই real-time দেখবে — owner ও
       const unsubShared = onSnapshot(doc(db, "shared_tables", sharedId), (snap) => {
         if (snap.exists()) {
           const d = snap.data();
-          const myId = user?.email?.toLowerCase() || user?.uid;
-          if (d.lastEditedBy && d.lastEditedBy === myId) return;
+          // নিজে যদি last editor হই তাহলে skip — নিজের input overwrite হবে না
+          if (d.lastEditedBy && d.lastEditedBy === user?.uid) return;
           if (d.tabData) {
             setTabs(prev => {
               const exists = prev.find(t => t.id === d.tabData.id);
