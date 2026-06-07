@@ -3125,6 +3125,7 @@ function App() {
         await setDoc(doc(db, "shared_tables", shareId), {
           tabData: activeTab,
           lastUpdated: serverTimestamp(),
+          lastEditedBy: user?.email?.toLowerCase() || user?.uid || "unknown",
         }, { merge: true });
       } catch (err) {}
     }, 800);
@@ -3148,12 +3149,32 @@ function App() {
         return;
       }
 
+      // Permission check
+      const myEmail = user?.email?.toLowerCase() || "";
+      const perms = data.permissions || {};
+      let myRole = "viewer";
+      if (data.ownerId === user?.uid) myRole = "owner";
+      else if (perms[myEmail]) myRole = perms[myEmail];
+      else {
+        alert("You don't have permission to access this table.");
+        return;
+      }
+      setMyShareRole(myRole);
+      setSharePermissions(perms);
+
+      // Editor/owner can sync edits back
+      if (myRole === "editor" || myRole === "owner") {
+        setShareId(sharedId);
+      }
+
       setIsSharedView(true);
 
       // Listen to real-time updates
       const unsubShared = onSnapshot(doc(db, "shared_tables", sharedId), (snap) => {
         if (snap.exists()) {
           const d = snap.data();
+          const myId = user?.email?.toLowerCase() || user?.uid;
+          if (d.lastEditedBy && d.lastEditedBy === myId) return;
           if (d.tabData) {
             setTabs(prev => {
               const exists = prev.find(t => t.id === d.tabData.id);
@@ -3162,7 +3183,9 @@ function App() {
               }
               return [...prev, d.tabData];
             });
+            setActiveTabId(d.tabData.id);
           }
+          if (d.permissions) setSharePermissions(d.permissions);
         }
       });
 
