@@ -482,7 +482,7 @@ function MiniPieChart({ data, labels }) {
 // ============================================================
 // LANDING PAGE
 // ============================================================
-function LandingPage({ onLogin, isDark }) {
+function LandingPage({ onLogin, isDark, onSupportClick }) {
   const monthlyLink = LEMON_MONTHLY_LINK;
   const yearlyLink = LEMON_YEARLY_LINK;
   const desktopLink = LEMON_DESKTOP_LINK;
@@ -662,7 +662,7 @@ function LandingPage({ onLogin, isDark }) {
           <p className="text-[10px] font-black uppercase tracking-[0.28em] text-[#36516f]">
             Bangladesh users can pay with bKash after choosing a premium plan. Admin approval activates Premium.
           </p>
-          <a href={SUPPORT_LINK} className="mt-3 inline-flex rounded-xl border border-[#3978d8]/20 bg-white px-4 py-2 text-[10px] font-black uppercase tracking-widest text-[#2457d6] transition-all hover:-translate-y-0.5 hover:bg-[#eef5ff]">Payment Support</a>
+          <button onClick={onSupportClick} className="mt-3 inline-flex rounded-xl border border-[#3978d8]/20 bg-white px-4 py-2 text-[10px] font-black uppercase tracking-widest text-[#2457d6] transition-all hover:-translate-y-0.5 hover:bg-[#eef5ff]">Payment Support</button>
           
             <a href="/terms.html" target="_blank" rel="noopener" className="mt-3 inline-flex rounded-xl border border-[#3978d8]/20 bg-white px-4 py-2 text-[10px] font-black uppercase tracking-widest text-[#2457d6] transition-all hover:-translate-y-0.5 hover:bg-[#eef5ff]">Terms of Service</a>
             <a href="/privacy.html" target="_blank" rel="noopener" className="mt-3 inline-flex rounded-xl border border-[#3978d8]/20 bg-white px-4 py-2 text-[10px] font-black uppercase tracking-widest text-[#2457d6] transition-all hover:-translate-y-0.5 hover:bg-[#eef5ff]">Privacy Policy</a>
@@ -674,6 +674,100 @@ function LandingPage({ onLogin, isDark }) {
   );
 }
 // ============================================================
+
+function PaymentSupportChat({ onClose, isDark }) {
+  const SUPPORT_EMAIL = "iftia5061@gmail.com";
+  const faqs = [
+    {
+      q: "I paid but Pro is not activated",
+      steps: [
+        "Wait 5-10 minutes after payment",
+        "Reload the page (Ctrl+R)",
+        "Login with the same Gmail used for payment",
+        "If still not working, email us using the button below",
+      ],
+    },
+    {
+      q: "Payment was made with wrong Gmail",
+      steps: [
+        "Note your Transaction ID (found in Lemon Squeezy email)",
+        "Note your correct Gmail address",
+        "Email us below — will be fixed within 24 hours",
+      ],
+    },
+    {
+      q: "I want a refund",
+      steps: [
+        "Refund requests accepted within 7 days of purchase",
+        "Email us with your Transaction ID",
+        "Refund processed within 3-5 business days",
+      ],
+    },
+    {
+      q: "Money was deducted but payment failed",
+      steps: [
+        "Take a screenshot of your bank statement",
+        "Note your Transaction ID or reference number",
+        "Email us below — will be checked immediately",
+      ],
+    },
+    {
+      q: "Desktop/Phone app is not working",
+      steps: [
+        "Uninstall and reinstall the app",
+        "Check your internet connection",
+        "Check if Windows Defender or Antivirus is blocking it",
+        "If still not working, email us below",
+      ],
+    },
+  ];
+  const [selected, setSelected] = React.useState(null);
+  return (
+    <div className="fixed inset-0 z-[999] flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.7)" }}>
+      <div className={`w-full max-w-md rounded-3xl border shadow-2xl flex flex-col ${isDark ? "bg-[#070f1e] border-[#1e3a5f]" : "bg-white border-slate-200"}`} style={{ maxHeight: "85vh" }}>
+        <div className={`flex items-center justify-between px-6 py-4 border-b ${isDark ? "border-[#1e3a5f]" : "border-slate-100"}`}>
+          <div>
+            <p className="text-sm font-black uppercase tracking-widest text-blue-400">Payment Support</p>
+            <p className={`text-[10px] mt-0.5 ${isDark ? "text-slate-500" : "text-slate-400"}`}>Select your issue to see the solution</p>
+          </div>
+          <button onClick={onClose} className="text-slate-400 hover:text-slate-300 text-xl font-black">✕</button>
+        </div>
+        <div className="flex-1 overflow-y-auto px-4 py-4 space-y-2">
+          {faqs.map((faq, i) => (
+            <div key={i}>
+              <button
+                onClick={() => setSelected(selected === i ? null : i)}
+                className={`w-full text-left px-4 py-3 rounded-2xl border transition-all flex items-center justify-between gap-2 ${selected === i ? "bg-blue-600 border-blue-500 text-white" : isDark ? "bg-[#0a1628] border-[#1e3a5f] text-slate-300 hover:border-blue-500/40" : "bg-slate-50 border-slate-200 text-slate-700 hover:border-blue-300"}`}
+              >
+                <span className="text-[12px] font-bold">{faq.q}</span>
+                <span className="text-lg">{selected === i ? "▲" : "▼"}</span>
+              </button>
+              {selected === i && (
+                <div className={`mx-2 px-4 py-3 rounded-b-2xl border border-t-0 ${isDark ? "bg-[#050d1f] border-[#1e3a5f]" : "bg-blue-50 border-blue-100"}`}>
+                  <p className={`text-[10px] font-black uppercase tracking-widest mb-2 ${isDark ? "text-blue-400" : "text-blue-600"}`}>Solution:</p>
+                  <div className="space-y-2">
+                    {faq.steps.map((step, j) => (
+                      <div key={j} className="flex items-start gap-2">
+                        <span className="w-5 h-5 rounded-full bg-blue-600 text-white text-[9px] font-black flex items-center justify-center flex-shrink-0 mt-0.5">{j + 1}</span>
+                        <p className={`text-[11px] ${isDark ? "text-slate-300" : "text-slate-600"}`}>{step}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+        <div className={`px-6 py-4 border-t ${isDark ? "border-[#1e3a5f]" : "border-slate-100"}`}>
+          <p className={`text-[10px] text-center mb-3 ${isDark ? "text-slate-500" : "text-slate-400"}`}>If your issue is not resolved, contact us directly</p>
+          <a href={`mailto:${SUPPORT_EMAIL}?subject=SheetMind Payment Support`} className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white text-[11px] font-black uppercase tracking-widest transition-all">
+            ✉ Email Us
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function AdminPanel({ onClose, isDark, currentUser }) {
   const [allUsers,         setAllUsers]         = useState([]);
@@ -1062,37 +1156,43 @@ const sub = isDark
     {
       icon: "👋",
       title: `Welcome, ${userName || "Friend"}!`,
-      desc: "NeoSheet Pro is your AI-powered smart SHEETMIND. Let's take a quick tour!",
+      desc: "SheetMind is your AI-powered smart spreadsheet. Let's take a quick tour so you know what's here!",
       color: "#d4af37",
     },
     {
-      icon: "⚡",
-      title: "AI Generator",
-      desc: "Type any command like 'Salary sheet 20 rows' and AI will build the table structure instantly for you.",
+      icon: "➕",
+      title: "Create a Table",
+      desc: "Click the '+' button at the top to create a new table. Give it a name and start adding columns.",
       color: "#6366f1",
+    },
+    {
+      icon: "⚡",
+      title: "AI Table Generator",
+      desc: "Click 'AI TABLE' button and type something like 'Student list 20 rows' — AI will build the table instantly!",
+      color: "#8b5cf6",
     },
     {
       icon: "📋",
       title: "Templates",
-      desc: "Choose from Student Sheet, Salary, Inventory, CRM and more — all pre-configured and ready to use.",
+      desc: "Click 'TEMPLATES' to choose from ready-made sheets — Student, Salary, Inventory, CRM and more.",
       color: "#10b981",
     },
     {
-      icon: "💾",
-      title: "Auto Save",
-      desc: "Your data saves automatically to the cloud. Access your sheets from any device, anytime.",
-      color: "#f59e0b",
-    },
-    {
-      icon: "📤",
-      title: "Export Anywhere",
-      desc: "Download your data as PDF or Excel with one click. Share with anyone, anywhere.",
+      icon: "🔗",
+      title: "Share & Collaborate",
+      desc: "Click 'SHARE' to invite others. Add their email as Editor or Viewer — multiple people can work on the same table!",
       color: "#22d3ee",
     },
     {
+      icon: "📤",
+      title: "Export Your Data",
+      desc: "Use 'EXPORT PDF' or 'EXPORT' button to download your table as PDF or Excel file anytime.",
+      color: "#f59e0b",
+    },
+    {
       icon: "🚀",
-      title: "You're Ready!",
-      desc: "Free plan includes 4 tables. Upgrade to Pro for unlimited tables, AI features and more.",
+      title: "You're All Set!",
+      desc: "Free plan gives you 4 tables. Upgrade to Pro for unlimited tables, unlimited AI, and priority support.",
       color: "#d4af37",
     },
   ];
@@ -1246,7 +1346,7 @@ function ProGateModal({ message, onUpgrade, onClose, isDark, tabCount }) {
 // ============================================================
 // UPGRADE MODAL — Deep Blue + Gold Theme
 // ============================================================
-function UpgradeModal({ onClose, isDark, currentUser }) {
+function UpgradeModal({ onClose, isDark, currentUser, onSupportClick }) {
   const [plan, setPlan] = useState("monthly");
   const [step, setStep] = useState("plans");
   const [txId, setTxId] = useState("");
@@ -1357,7 +1457,7 @@ function UpgradeModal({ onClose, isDark, currentUser }) {
             <p className="text-[10px] font-black text-blue-400 uppercase tracking-wider">⏳ Admin Approval Pending</p>
             <p className={`text-[9px] ${sub} mt-1`}>সাধারণত কয়েক ঘণ্টার মধ্যে approve হয়।</p>
           </div>
-          <a href={SUPPORT_LINK} className={`mb-3 flex w-full items-center justify-center rounded-2xl border py-3 text-[11px] font-black uppercase tracking-widest transition-all ${isDark ? "border-blue-500/20 text-blue-400 hover:bg-blue-500/10" : "border-blue-200 text-blue-600 hover:bg-blue-50"}`}>Payment Support</a>
+          <button onClick={onSupportClick} className={`mb-3 flex w-full items-center justify-center rounded-2xl border py-3 text-[11px] font-black uppercase tracking-widest transition-all ${isDark ? "border-blue-500/20 text-blue-400 hover:bg-blue-500/10" : "border-blue-200 text-blue-600 hover:bg-blue-50"}`}>Payment Support</button>
           <button onClick={onClose}
             className="w-full py-3 rounded-2xl font-black text-sm bg-gradient-to-r from-yellow-500 to-amber-400 hover:from-yellow-400 hover:to-amber-300 text-slate-900 transition-all">
             বন্ধ করো
@@ -1448,7 +1548,7 @@ function UpgradeModal({ onClose, isDark, currentUser }) {
               <p className={`text-[9px] ${sub} text-center mt-1`}>
                 Visa, Mastercard, PayPal - automatic activation after payment confirmation
               </p>
-              <a href={SUPPORT_LINK} className={`mt-3 flex w-full items-center justify-center rounded-xl border py-2 text-[10px] font-black uppercase tracking-widest transition-all ${isDark ? "border-blue-500/20 text-blue-400 hover:bg-blue-500/10" : "border-blue-200 text-blue-600 hover:bg-blue-50"}`}>Payment Support</a>
+              <button onClick={onSupportClick} className={`mt-3 flex w-full items-center justify-center rounded-xl border py-2 text-[10px] font-black uppercase tracking-widest transition-all ${isDark ? "border-blue-500/20 text-blue-400 hover:bg-blue-500/10" : "border-blue-200 text-blue-600 hover:bg-blue-50"}`}>Payment Support</button>
             </>
           )}
 
@@ -1564,6 +1664,7 @@ function UpgradeModal({ onClose, isDark, currentUser }) {
 //==========================================================
 function AITableModal({ onClose, onGenerate, isDark, isPremium, aiTableUsage }) {
   const [prompt, setPrompt] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const remaining = Math.max(AI_FREE_TABLE_LIMIT - aiTableUsage, 0);
 
@@ -1641,11 +1742,21 @@ function AITableModal({ onClose, onGenerate, isDark, isPremium, aiTableUsage }) 
             </button>
 
             <button
-              onClick={() => onGenerate(prompt)}
-              disabled={!prompt.trim()}
-              className="flex-1 py-3 rounded-xl font-black text-[11px] uppercase bg-gradient-to-r from-[#2563eb] to-[#0ea5e9] hover:from-[#1d4ed8] hover:to-[#0284c7] disabled:opacity-50 text-white shadow-[0_12px_28px_rgba(37,99,235,0.28)]"
+              onClick={async () => {
+                if (!prompt.trim() || loading) return;
+                setLoading(true);
+                await onGenerate(prompt);
+                setLoading(false);
+              }}
+              disabled={!prompt.trim() || loading}
+              className="flex-1 py-3 rounded-xl font-black text-[11px] uppercase bg-gradient-to-r from-[#2563eb] to-[#0ea5e9] hover:from-[#1d4ed8] hover:to-[#0284c7] disabled:opacity-50 text-white shadow-[0_12px_28px_rgba(37,99,235,0.28)] flex items-center justify-center gap-2"
             >
-              Generate
+              {loading ? (
+                <>
+                  <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                  Generating...
+                </>
+              ) : "Generate"}
             </button>
           </div>
         </div>
@@ -2269,6 +2380,7 @@ function App() {
   const [showAdmin,          setShowAdmin]          = useState(false);
   const [showAnalytics,      setShowAnalytics]      = useState(false);
   const [showUpgrade,        setShowUpgrade]        = useState(false);
+  const [showSupportChat,    setShowSupportChat]    = useState(false);
   const [showAIAnalysis,     setShowAIAnalysis]     = useState(false);
   const [showTemplates,      setShowTemplates]      = useState(false);
   const [isPremium,          setIsPremium]          = useState(false);
@@ -4038,7 +4150,7 @@ const clearAllHistory = () => {
   );
 }, [rows, searchTerm]);
 
-  if (page === "landing") return <LandingPage onLogin={handleGoogleLogin} isDark={isDark} />;
+  if (page === "landing") return <LandingPage onLogin={handleGoogleLogin} isDark={isDark} onSupportClick={() => setShowSupportChat(true)} />;
 
   // ============================================================
   // DESIGN TOKENS — DEEP BLUE + GOLD PREMIUM THEME
@@ -4238,7 +4350,8 @@ const btnSuccess =
         </div>
       )}
       {showAdmin    && <AdminPanel onClose={() => setShowAdmin(false)} isDark={isDark} currentUser={user} />}
-      {showUpgrade  && <UpgradeModal onClose={() => setShowUpgrade(false)} isDark={isDark} currentUser={user} />}
+      {showUpgrade  && <UpgradeModal onClose={() => setShowUpgrade(false)} isDark={isDark} currentUser={user} onSupportClick={() => { setShowUpgrade(false); setShowSupportChat(true); }} />}
+      {showSupportChat && <PaymentSupportChat onClose={() => setShowSupportChat(false)} isDark={isDark} />}
       {showAITable && (
         <AITableModal
           isDark={isDark}
