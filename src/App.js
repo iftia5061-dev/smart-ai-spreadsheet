@@ -3900,7 +3900,7 @@ const clearAllHistory = () => {
       return Math.max(max, len);
     }, 0);
     const maxLen = Math.max(headerLen * 1.1, maxCellLen, 8);
-    return `${Math.min(Math.max(maxLen * 9 + 60, 110), 600)}px`;
+    return `${Math.min(Math.max(maxLen * 7 + 30, 80), 300)}px`;
   };
 
   const getConditionalTextColor = (col, val) => {
@@ -3954,17 +3954,17 @@ const clearAllHistory = () => {
     const rawVal   = cellVal(cell);
     const val      = rawVal.startsWith("=") ? evaluateFormula(rawVal, rows, columns) : rawVal;
     const styleObj = buildCellStyle(col, cell);
-    const baseCls = `bg-transparent outline-none text-sm transition-all focus:bg-sky-500/[0.08] px-4 py-3.5 ${isDark ? "text-[#f1f6ff]" : "text-[#172033]"}`;
+    const baseCls = `bg-transparent outline-none text-[11px] transition-all focus:bg-sky-500/[0.08] px-2 py-[3px] ${isDark ? "text-[#f1f6ff]" : "text-[#172033]"}`;
     const inputStyle = { ...styleObj, width: "100%", minWidth: "max-content", boxSizing: "border-box" };
 
     if (col === "ID") return (
       <input type="text" value={val} readOnly
-        className="bg-transparent px-4 py-3.5 outline-none text-sm text-[#3978d8] font-black text-center w-full"
+        className="bg-transparent px-2 py-1 outline-none text-xs text-[#3978d8] font-black text-center w-full"
         style={{ minWidth: "50px" }} />
     );
 
     if (colType === "checkbox") return (
-      <div className="flex items-center justify-center py-3">
+      <div className="flex items-center justify-center py-1">
         <input type="checkbox" checked={val === "true" || val === true}
           onChange={e => handleCellChange(rIdx, col, String(e.target.checked))}
           className="w-4 h-4 accent-indigo-500 cursor-pointer" />
@@ -3983,7 +3983,7 @@ const clearAllHistory = () => {
       const opts = columnTypes[col + "__options"] || [];
       return (
         <select value={val} onChange={e => handleCellChange(rIdx, col, e.target.value)}
-          className="bg-transparent px-4 py-3.5 outline-none text-sm cursor-pointer appearance-none w-full"
+          className="bg-transparent px-2 py-1 outline-none text-xs cursor-pointer appearance-none w-full"
           style={styleObj}>
           <option value="">— Select —</option>
           {opts.map(o => <option key={o} value={o} style={{ background: isDark ? "#1e293b" : "#fff" }}>{o}</option>)}
@@ -4708,55 +4708,48 @@ const btnSuccess =
 
           {/* ===== MAIN SHEET PANEL ===== */}
           <div className={`${bgPanel} border ${borderColor} rounded-b-[2rem] rounded-tr-[2rem] shadow-xl`} style={{ borderTopWidth: 0 }}>
-            <div className="p-5">
+            <div className="px-3 py-2">
 
-              {/* TOOLS ROW */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+              {/* TOOLS ROW — compact */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-2">
                 {/* AI Generator */}
-                <div className={`relative ${bgSubtle} border ${borderColor} p-5 rounded-[1.5rem]`}>
-                  <div className="flex items-center gap-2 mb-3">
-                    <div className="w-2 h-2 bg-indigo-500 rounded-full animate-pulse"></div>
+                <div className={`relative ${bgSubtle} border ${borderColor} px-3 py-2 rounded-xl`}>
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <div className="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-pulse"></div>
                     <label className="text-[9px] font-black text-indigo-400 uppercase tracking-[0.2em]">AI Generator</label>
                   </div>
-                  <input type="text" className={`w-full border rounded-xl px-4 py-3 outline-none text-sm mb-3 transition-all ${inputCls}`}
-                    placeholder="e.g. 'Payroll 15 rows' or 'Student List'"
-                    value={genText} onChange={e => setGenText(e.target.value)}
-                    onKeyDown={e => e.key === "Enter" && handleGenerateTable()} />
-                  <button onClick={handleGenerateTable} disabled={isLoading || !genText}
-                    className={`w-full py-3 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all flex items-center justify-center gap-2 ${
-                      isLoading || !genText
-                        ? "opacity-50 cursor-not-allowed bg-indigo-600/50 text-white"
-                        : "bg-gradient-to-r from-indigo-600 to-sky-600 hover:from-indigo-500 hover:to-sky-500 text-white shadow-sm shadow-indigo-900/20"
-                    }`}>
-                    {isLoading ? <><div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>Building...</> : "Build Structure"}
-                  </button>
+                  <div className="flex gap-2">
+                    <input type="text" className={`flex-1 border rounded-lg px-3 py-1.5 outline-none text-xs transition-all ${inputCls}`}
+                      placeholder="e.g. 'Payroll 15 rows' or 'Student List'"
+                      value={genText} onChange={e => setGenText(e.target.value)}
+                      onKeyDown={e => e.key === "Enter" && handleGenerateTable()} />
+                    <button onClick={handleGenerateTable} disabled={isLoading || !genText}
+                      className={`px-3 py-1.5 rounded-lg font-black text-[9px] uppercase tracking-widest transition-all flex items-center gap-1 ${
+                        isLoading || !genText
+                          ? "opacity-50 cursor-not-allowed bg-indigo-600/50 text-white"
+                          : "bg-gradient-to-r from-indigo-600 to-sky-600 hover:from-indigo-500 hover:to-sky-500 text-white"
+                      }`}>
+                      {isLoading ? <><div className="w-2.5 h-2.5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>Building...</> : "Build"}
+                    </button>
+                  </div>
                 </div>
 
                 {/* Calc Engine */}
-                <div className={`${bgSubtle} border ${borderColor} p-5 rounded-[1.5rem]`}>
-                  <div className="flex items-center gap-2 mb-3">
-                    <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
+                <div className={`${bgSubtle} border ${borderColor} px-3 py-2 rounded-xl`}>
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></div>
                     <label className="text-[9px] font-black text-emerald-400 uppercase tracking-[0.2em]">Calc Engine</label>
                   </div>
-                  <input type="text" className={`w-full border rounded-xl px-4 py-3 outline-none text-sm mb-3 transition-all ${inputCls}`}
-                    placeholder="Formula... (e.g. Salary + Bonus)"
-                    value={inputText} onChange={e => setInputText(e.target.value)} />
-                  {calculationResult ? (
-                    <div className={`p-4 rounded-xl border flex justify-between items-center ${isDark ? "bg-emerald-500/5 border-emerald-500/20" : "bg-emerald-50 border-emerald-200"}`}>
-                      <div>
-                        <p className="text-[9px] text-emerald-500/60 font-black uppercase">{calculationResult.label}</p>
-                        <h3 className="text-2xl font-black text-emerald-400">{calculationResult.value}</h3>
+                  <div className="flex gap-2">
+                    <input type="text" className={`flex-1 border rounded-lg px-3 py-1.5 outline-none text-xs transition-all ${inputCls}`}
+                      placeholder="Formula... (e.g. Salary + Bonus)"
+                      value={inputText} onChange={e => setInputText(e.target.value)} />
+                    {calculationResult && (
+                      <div className={`px-2 py-1 rounded-lg border flex items-center gap-2 ${isDark ? "bg-emerald-500/5 border-emerald-500/20" : "bg-emerald-50 border-emerald-200"}`}>
+                        <h3 className="text-sm font-black text-emerald-400">{calculationResult.value}</h3>
                       </div>
-                      <div className="text-right">
-                        <p className={`text-[9px] ${textSub} font-mono`}>Formula</p>
-                        <p className={`text-[10px] ${textMain} font-black uppercase`}>{calculationResult.formula}</p>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className={`py-5 text-center border border-dashed ${borderColor} rounded-xl`}>
-                      <p className={`text-[9px] ${textSub} font-black uppercase tracking-widest`}>Enter a formula above</p>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -5097,26 +5090,53 @@ const btnSuccess =
               <div className={`${bgSubtle} border ${borderColor} px-4 py-3.5 rounded-2xl mb-4 flex flex-col md:flex-row justify-between items-center gap-3`}>
                 <div className="flex items-center gap-2 flex-1 min-w-0">
                 <input type="text"
-                  className="bg-transparent border-none outline-none text-xl font-black placeholder:text-slate-700/30 flex-1 min-w-0"
+                  className={`bg-transparent border-none outline-none placeholder:text-slate-700/30 flex-1 min-w-0 text-${activeTab?.titleSize || "xl"}`}
                   placeholder="Untitled Document"
                   value={tableTitle}
                   onChange={e => setTableTitle(e.target.value)}
-                  style={{ color: activeTab?.titleColor || (isDark ? "#f1f5f9" : "#172033") }}
+                  style={{
+                    color: activeTab?.titleColor || (isDark ? "#f1f5f9" : "#172033"),
+                    fontWeight: activeTab?.titleBold ? "900" : "700",
+                    fontStyle: activeTab?.titleItalic ? "italic" : "normal",
+                  }}
                 />
-                <div className="relative flex-shrink-0">
-                  <input
-                    type="color"
-                    value={activeTab?.titleColor || "#6366f1"}
-                    onChange={e => updateActiveTab({ titleColor: e.target.value })}
-                    className="w-7 h-7 rounded-lg border-0 cursor-pointer opacity-0 absolute inset-0"
-                    title="Title color"
-                  />
-                  <div className="w-7 h-7 rounded-lg border-2 cursor-pointer transition-all"
-                    style={{
-                      backgroundColor: activeTab?.titleColor || "#6366f1",
-                      borderColor: activeTab?.titleColor || "#6366f1",
-                    }}>
+                <div className="flex items-center gap-1 flex-shrink-0">
+                  {/* Color picker */}
+                  <div className="relative">
+                    <input
+                      type="color"
+                      value={activeTab?.titleColor || "#6366f1"}
+                      onChange={e => updateActiveTab({ titleColor: e.target.value })}
+                      className="w-6 h-6 rounded-lg border-0 cursor-pointer opacity-0 absolute inset-0"
+                      title="Title color"
+                    />
+                    <div className="w-6 h-6 rounded-lg border-2 cursor-pointer transition-all"
+                      style={{ backgroundColor: activeTab?.titleColor || "#6366f1", borderColor: activeTab?.titleColor || "#6366f1" }}>
+                    </div>
                   </div>
+                  {/* Bold */}
+                  <button
+                    onClick={() => updateActiveTab({ titleBold: !activeTab?.titleBold })}
+                    className={`w-6 h-6 rounded-lg text-[10px] font-black border transition-all ${activeTab?.titleBold ? "bg-indigo-600 border-indigo-500 text-white" : isDark ? "border-[#1e3a5f] text-slate-400 hover:bg-white/5" : "border-slate-200 text-slate-500 hover:bg-slate-50"}`}>
+                    B
+                  </button>
+                  {/* Italic */}
+                  <button
+                    onClick={() => updateActiveTab({ titleItalic: !activeTab?.titleItalic })}
+                    className={`w-6 h-6 rounded-lg text-[10px] italic border transition-all ${activeTab?.titleItalic ? "bg-indigo-600 border-indigo-500 text-white" : isDark ? "border-[#1e3a5f] text-slate-400 hover:bg-white/5" : "border-slate-200 text-slate-500 hover:bg-slate-50"}`}>
+                    I
+                  </button>
+                  {/* Font size */}
+                  <select
+                    value={activeTab?.titleSize || "xl"}
+                    onChange={e => updateActiveTab({ titleSize: e.target.value })}
+                    className={`h-6 px-1 rounded-lg text-[9px] font-black border outline-none ${isDark ? "bg-[#050d1f] border-[#1e3a5f] text-slate-300" : "bg-white border-slate-200"}`}>
+                    <option value="sm">S</option>
+                    <option value="base">M</option>
+                    <option value="xl">L</option>
+                    <option value="3xl">XL</option>
+                    <option value="5xl">XXL</option>
+                  </select>
                 </div>
               </div>
                 <input type="text" className={`border rounded-xl px-4 py-2 outline-none text-xs w-full md:w-52 transition-all flex-shrink-0 ${inputCls}`}
@@ -5150,7 +5170,7 @@ const btnSuccess =
 
               {/* ===== TABLE ===== */}
               <div className={`${bgSubtle} rounded-2xl border ${borderColor} shadow-inner overflow-hidden`}>
-                <div className="ss-scroll-container" ref={tableRef} style={{ overflowX: "auto", overflowY: "auto", maxHeight: "60vh", WebkitOverflowScrolling: "touch" }}>
+                <div className="ss-scroll-container" ref={tableRef} style={{ overflowX: "auto", overflowY: "auto", maxHeight: "82vh", WebkitOverflowScrolling: "touch" }}>
                   <table className="border-collapse" style={{ tableLayout: "auto", width: "max-content", minWidth: "100%" }}>
                     <thead className={`${tableHeadCls} sticky top-0 z-10 border-b ${borderColor}`}>
                       <tr>
@@ -5264,9 +5284,14 @@ const btnSuccess =
                                 background: cIdx < frozenCols ? (isDark ? "#0a1018" : "#ffffff") : (tdBg || undefined), overflow: "visible", whiteSpace: "nowrap", userSelect: "text", WebkitUserSelect: "text", cursor: "text" }}
                                 onMouseDown={e => {
                                   e.stopPropagation();
-                                  setSelectionStart({ rIdx: originalIndex, cIdx });
-                                  setSelectionEnd({ rIdx: originalIndex, cIdx });
-                                  setIsSelecting(true);
+                                  if (e.shiftKey && selectionStart) {
+                                    // Shift+click = range extend
+                                    setSelectionEnd({ rIdx: originalIndex, cIdx });
+                                  } else {
+                                    setSelectionStart({ rIdx: originalIndex, cIdx });
+                                    setSelectionEnd({ rIdx: originalIndex, cIdx });
+                                    setIsSelecting(true);
+                                  }
                                   setSelectedCell({ rIdx: originalIndex, col });
                                 }}
                                 onMouseEnter={() => {
