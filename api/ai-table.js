@@ -106,11 +106,12 @@ Rules:
       "X-Title": "Smart AI Table",
     },
     body: JSON.stringify({
-      model: "google/gemini-2.5-flash",
+      model: "google/gemini-2.0-flash-lite",
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt },
       ],
+      max_tokens: 1000,
       temperature: 0.35,
     }),
   });
