@@ -66,7 +66,7 @@ const LEMON_PHONE_LINK = "https://iftiahamed.lemonsqueezy.com/checkout/buy/6b3e3
 const SUPPORT_LINK = "mailto:iftia5061@gmail.com?subject=SheetMind%20Payment%20Support";
 const AUTOSAVE_DELAY = 1500;
 const AI_FREE_TABLE_LIMIT = 2;
-const AI_TABLE_ENDPOINT = "https://smart-ai-two-phi.vercel.app/api/ai-table";
+const AI_TABLE_ENDPOINT = "/api/ai-table";
 const ENABLE_AI_TABLE = true;
 const FREE_COLLAB_LIMIT = 3; // Free plan max collaborators
 // ↓ REPLACE with your real AdSense Publisher ID
