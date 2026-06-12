@@ -2421,6 +2421,10 @@ function App() {
   const [selectionStart, setSelectionStart] = useState(null);
   const [selectionEnd, setSelectionEnd] = useState(null);
   const [isSelecting, setIsSelecting] = useState(false);
+  const [commentCell,  setCommentCell]  = useState(null);
+  const [commentText,  setCommentText]  = useState("");
+  const [hoverComment, setHoverComment] = useState(null);
+  const [autoSuggest,  setAutoSuggest]  = useState({ show: false, rIdx: -1, col: "", items: [] });
   const [showConditional, setShowConditional] = useState(false);
   const [conditionalRules, setConditionalRules] = useState([]);
   const [showBorderModal, setShowBorderModal] = useState(false);
@@ -3085,6 +3089,24 @@ function App() {
     }));
     handleFind();
   }, [findText, replaceText, columns, activeTabId, takeSnapshot, handleFind]);
+
+  const handleSaveComment = useCallback((rIdx, col, text) => {
+    setTabs(prev => prev.map(t => {
+      if (t.id !== activeTabId) return t;
+      const updatedRows = [...t.rows];
+      const existing = updatedRows[rIdx]?.[col] || {};
+      updatedRows[rIdx] = {
+        ...updatedRows[rIdx],
+        [col]: {
+          ...(typeof existing === "object" ? existing : { value: existing }),
+          comment: text || undefined,
+        },
+      };
+      return { ...t, rows: updatedRows };
+    }));
+    setCommentCell(null);
+    setCommentText("");
+  }, [activeTabId]);
  
   // Multi-cell format apply করো
   const applyMultiCellFormat = useCallback((fmt) => {
@@ -3862,8 +3884,16 @@ const clearAllHistory = () => {
     let targetRow = rIdx, targetCol = cIdx;
     if (e.key === "ArrowRight")                       { if (cursorPosition < textLength) return; targetCol++; }
     else if (e.key === "ArrowLeft")                   { if (cursorPosition > 0) return; targetCol--; }
-    else if (e.key === "ArrowDown" || e.key === "Enter") { e.preventDefault(); targetRow++; }
+    else if (e.key === "ArrowDown" || e.key === "Enter") {
+      e.preventDefault();
+      targetRow++;
+      // শেষ row এ Enter চাপলে নতুন row তৈরি করো
+      if (e.key === "Enter" && rIdx === rows.length - 1) {
+        addRow();
+      }
+    }
     else if (e.key === "ArrowUp")                     { targetRow--; }
+    else if (e.key === "Tab") { e.preventDefault(); targetCol++; if (targetCol >= columns.length) { targetCol = 0; targetRow++; } }
     else return;
     if (targetRow >= 0 && targetRow < rows.length && targetCol >= 0 && targetCol < columns.length) {
       const inputs = tableRef.current?.querySelectorAll('input[type="text"], input[type="date"]');
@@ -3991,21 +4021,56 @@ const clearAllHistory = () => {
       );
     }
 
+    // Autocomplete suggestions — same column এর আগের values
+    const suggestions = autoSuggest.show && autoSuggest.rIdx === rIdx && autoSuggest.col === col
+      ? autoSuggest.items : [];
+
     return (
-      <input type="text" value={val}
-        onFocus={e => {
-          setSelectedCell({ rIdx, col });
-          setFormulaBarVal(rawVal);
-          if (rawVal.startsWith("=")) e.target.value = rawVal;
-        }}
-        onChange={e => {
-          handleCellChange(rIdx, col, e.target.value);
-          setFormulaBarVal(e.target.value);
-        }}
-        onClick={e => e.stopPropagation()}
-        onKeyDown={e => handleKeyDown(e, rIdx, cIdx)}
-        className={baseCls}
-        style={inputStyle} />
+      <div className="relative w-full">
+        <input type="text" value={val}
+          onFocus={e => {
+            setSelectedCell({ rIdx, col });
+            setFormulaBarVal(rawVal);
+            if (rawVal.startsWith("=")) e.target.value = rawVal;
+          }}
+          onChange={e => {
+            const newVal = e.target.value;
+            handleCellChange(rIdx, col, newVal);
+            setFormulaBarVal(newVal);
+            // Suggest from same column
+            if (newVal.length > 0) {
+              const seen = new Set();
+              const items = rows
+                .filter((r, i) => i !== rIdx)
+                .map(r => cellVal(r[col]))
+                .filter(v => v && v.toLowerCase().startsWith(newVal.toLowerCase()) && !seen.has(v) && seen.add(v))
+                .slice(0, 5);
+              setAutoSuggest({ show: items.length > 0, rIdx, col, items });
+            } else {
+              setAutoSuggest({ show: false, rIdx: -1, col: "", items: [] });
+            }
+          }}
+          onBlur={() => setTimeout(() => setAutoSuggest({ show: false, rIdx: -1, col: "", items: [] }), 150)}
+          onClick={e => e.stopPropagation()}
+          onKeyDown={e => handleKeyDown(e, rIdx, cIdx)}
+          className={baseCls}
+          style={inputStyle} />
+        {suggestions.length > 0 && (
+          <div className={`absolute top-full left-0 z-50 rounded-xl border shadow-xl overflow-hidden min-w-[140px] ${isDark ? "bg-[#0a1628] border-[#1e3a5f]" : "bg-white border-slate-200"}`}>
+            {suggestions.map((s, i) => (
+              <button key={i}
+                onMouseDown={e => {
+                  e.preventDefault();
+                  handleCellChange(rIdx, col, s);
+                  setAutoSuggest({ show: false, rIdx: -1, col: "", items: [] });
+                }}
+                className={`w-full text-left px-3 py-1.5 text-[11px] font-medium transition-all ${isDark ? "text-slate-300 hover:bg-indigo-600/30" : "text-slate-700 hover:bg-indigo-50"}`}>
+                {s}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
     );
   };
 
@@ -4352,6 +4417,43 @@ const btnSuccess =
       {showAdmin    && <AdminPanel onClose={() => setShowAdmin(false)} isDark={isDark} currentUser={user} />}
       {showUpgrade  && <UpgradeModal onClose={() => setShowUpgrade(false)} isDark={isDark} currentUser={user} onSupportClick={() => { setShowUpgrade(false); setShowSupportChat(true); }} />}
       {showSupportChat && <PaymentSupportChat onClose={() => setShowSupportChat(false)} isDark={isDark} />}
+
+      {commentCell && (
+        <div className="fixed inset-0 z-[999] flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.5)" }}>
+          <div className={`w-full max-w-sm rounded-2xl border shadow-2xl p-5 ${isDark ? "bg-[#070f1e] border-[#1e3a5f]" : "bg-white border-slate-200"}`}>
+            <p className="text-xs font-black uppercase tracking-widest text-yellow-400 mb-3">💬 Cell Comment</p>
+            <textarea
+              autoFocus
+              value={commentText}
+              onChange={e => setCommentText(e.target.value)}
+              placeholder="Write your comment here..."
+              rows={4}
+              className={`w-full rounded-xl border px-3 py-2 text-sm outline-none resize-none ${isDark ? "bg-[#050d1f] border-[#1e3a5f] text-slate-300 placeholder-slate-600" : "bg-slate-50 border-slate-200 text-slate-700"}`}
+            />
+            <div className="flex gap-2 mt-3">
+              <button
+                onClick={() => handleSaveComment(commentCell.rIdx, commentCell.col, commentText)}
+                className="flex-1 py-2 rounded-xl font-black text-xs uppercase bg-yellow-500 hover:bg-yellow-400 text-black transition-all">
+                Save
+              </button>
+              <button
+                onClick={() => { setCommentCell(null); setCommentText(""); }}
+                className={`flex-1 py-2 rounded-xl font-black text-xs uppercase border transition-all ${isDark ? "border-[#1e3a5f] text-slate-400 hover:bg-white/5" : "border-slate-200 text-slate-500"}`}>
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {hoverComment && (
+        <div className="fixed z-[9999] pointer-events-none"
+          style={{ top: hoverComment.y + 10, left: hoverComment.x + 10 }}>
+          <div className="bg-yellow-400 text-black text-xs font-bold rounded-xl px-3 py-2 max-w-[200px] shadow-xl">
+            {hoverComment.text}
+          </div>
+        </div>
+      )}
       {showAITable && (
         <AITableModal
           isDark={isDark}
@@ -4652,6 +4754,21 @@ const btnSuccess =
                       className={`w-5 h-5 rounded flex items-center justify-center text-[9px] hover:text-indigo-400 transition-colors ${textSub}`}
                       title="Tab color">
                       🎨
+                    </button>
+                    <button
+                      onClick={e => {
+                        e.stopPropagation();
+                        const dupTab = {
+                          ...JSON.parse(JSON.stringify(tab)),
+                          id: `tab_${Date.now()}`,
+                          title: `${tab.title} (Copy)`,
+                        };
+                        setTabs(prev => [...prev, dupTab]);
+                        setActiveTabId(dupTab.id);
+                      }}
+                      className={`w-5 h-5 rounded flex items-center justify-center text-[9px] hover:text-emerald-400 transition-colors ${textSub}`}
+                      title="Duplicate table">
+                      ⧉
                     </button>
                     {tabs.length > 1 && (
                       <button onClick={e => closeTab(e, tab.id)}
@@ -5303,11 +5420,14 @@ const btnSuccess =
                                   const menu = document.createElement("div");
                                   menu.style.cssText = `position:fixed;top:${e.clientY}px;left:${e.clientX}px;z-index:9999;background:${isDark?"#08122a":"#fff"};border:1px solid ${isDark?"#d4af3722":"#e2e8f0"};border-radius:12px;padding:6px;min-width:140px;box-shadow:0 8px 32px rgba(0,0,0,0.4)`;
                                   const btnStyle = `display:block;width:100%;text-align:left;padding:8px 12px;font-size:10px;font-weight:900;letter-spacing:0.08em;text-transform:uppercase;border-radius:8px;cursor:pointer;color:${isDark?"#94a3b8":"#475569"};background:transparent;border:none;`;
-                                  menu.innerHTML = `<button style="${btnStyle}" id="nm-copy">📋 Copy</button><button style="${btnStyle}" id="nm-paste">📌 Paste</button><button style="${btnStyle}" id="nm-clear">🧹 Clear</button>`;
+                                  const existingComment = (typeof row[col] === "object" ? row[col]?.comment : "") || "";
+                                  menu.innerHTML = `<button style="${btnStyle}" id="nm-copy">📋 Copy</button><button style="${btnStyle}" id="nm-paste">📌 Paste</button><button style="${btnStyle}" id="nm-clear">🧹 Clear</button><hr style="border:none;border-top:1px solid ${isDark?"#1e3a5f":"#e2e8f0"};margin:4px 0"/><button style="${btnStyle}" id="nm-comment">💬 ${existingComment ? "Edit Comment" : "Add Comment"}</button>${existingComment ? `<button style="${btnStyle};color:#ef4444" id="nm-del-comment">🗑 Remove Comment</button>` : ""}`;
                                   document.body.appendChild(menu);
                                   document.getElementById("nm-copy").onclick = () => { handleCopyCell(originalIndex, col); document.body.removeChild(menu); };
                                   document.getElementById("nm-paste").onclick = () => { handlePasteCell(originalIndex, col); document.body.removeChild(menu); };
                                   document.getElementById("nm-clear").onclick = () => { handleCellChange(originalIndex, col, ""); document.body.removeChild(menu); };
+                                  document.getElementById("nm-comment").onclick = () => { setCommentCell({ rIdx: originalIndex, col }); setCommentText(existingComment); document.body.removeChild(menu); };
+                                  if (existingComment) document.getElementById("nm-del-comment").onclick = () => { handleSaveComment(originalIndex, col, ""); document.body.removeChild(menu); };
                                   const close = () => { if(document.body.contains(menu)) document.body.removeChild(menu); document.removeEventListener("click", close); };
                                   setTimeout(() => document.addEventListener("click", close), 100);
                                 }}>
@@ -5319,6 +5439,14 @@ const btnSuccess =
                                     style={{ pointerEvents: "auto" }}>
                                     fx
                                   </button>
+                                )}
+                                {(typeof row[col] === "object" && row[col]?.comment) && (
+                                  <div
+                                    className="absolute top-0 right-0 w-0 h-0 z-20"
+                                    style={{ borderStyle: "solid", borderWidth: "0 8px 8px 0", borderColor: "transparent #f59e0b transparent transparent" }}
+                                    onMouseEnter={e => setHoverComment({ rIdx: originalIndex, col, text: row[col].comment, x: e.clientX, y: e.clientY })}
+                                    onMouseLeave={() => setHoverComment(null)}
+                                  />
                                 )}
                               </td>
                             );
