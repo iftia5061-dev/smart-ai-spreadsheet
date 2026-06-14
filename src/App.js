@@ -57,12 +57,12 @@ const firebaseConfig = {
 const ADMIN_EMAIL = "iftia5061@gmail.com";
 const FREE_TABLE_LIMIT = 4;
 const BKASH_NUMBER = "01825453585";
-const LEMON_WEB_LINK = "https://iftiahamed.lemonsqueezy.com/checkout/buy/3c206055-164e-469b-bf09-a1a8c48972bf";
-const LEMON_APP_LINK = "https://iftiahamed.lemonsqueezy.com/checkout/buy/6b3e324b-ce94-44d2-9ee2-5ab6e82e41a6";
-const LEMON_MONTHLY_LINK = "https://iftiahamed.lemonsqueezy.com/checkout/buy/3c206055-164e-469b-bf09-a1a8c48972bf";
-const LEMON_YEARLY_LINK = "https://iftiahamed.lemonsqueezy.com/checkout/buy/060ed130-aa39-41d8-9c24-ab3fc1526827";
-const LEMON_DESKTOP_LINK = "https://iftiahamed.lemonsqueezy.com/checkout/buy/23bb7935-1f50-4384-8fdc-8c08023d866b";
-const LEMON_PHONE_LINK = "https://iftiahamed.lemonsqueezy.com/checkout/buy/6b3e324b-ce94-44d2-9ee2-5ab6e82e41a6";
+const LEMON_WEB_LINK = "https://ifti.gumroad.com/l/ydknwu";
+const LEMON_APP_LINK = "https://ifti.gumroad.com/l/ydknwu";
+const LEMON_MONTHLY_LINK = "https://ifti.gumroad.com/l/ydknwu";
+const LEMON_YEARLY_LINK = "https://ifti.gumroad.com/l/sfzmsb";
+const LEMON_DESKTOP_LINK = "https://ifti.gumroad.com/l/ydknwu";
+const LEMON_PHONE_LINK = "https://ifti.gumroad.com/l/ydknwu";
 const SUPPORT_LINK = "mailto:iftia5061@gmail.com?subject=SheetMind%20Payment%20Support";
 const AUTOSAVE_DELAY = 1500;
 const AI_FREE_TABLE_LIMIT = 2;
@@ -131,7 +131,7 @@ const makeBlankRow = (columns, id) => {
 // ============================================================
 // TAB FACTORY
 // ============================================================
-const makeNewTab = (title, columns, rowCount = 8) => {
+const makeNewTab = (title, columns, rowCount = 20) => {
   const id = Date.now() + Math.random();
   const cols = columns || ["ID", "Name", "Email", "Status"];
   return {
@@ -503,7 +503,7 @@ function LandingPage({ onLogin, isDark, onSupportClick }) {
     {
       id: "monthly",
       name: "Monthly Pro",
-      price: "$5",
+      price: "$9",
       period: "per month",
       tone: "blue",
       badge: "Popular",
@@ -515,7 +515,7 @@ function LandingPage({ onLogin, isDark, onSupportClick }) {
     {
       id: "yearly",
       name: "Yearly Pro",
-      price: "$49",
+      price: "$90",
       period: "per year",
       tone: "gold",
       badge: "Best Value",
@@ -1356,8 +1356,8 @@ function UpgradeModal({ onClose, isDark, currentUser, onSupportClick }) {
   const [copied, setCopied] = useState(false);
 
   const PLANS = {
-    monthly: { label: "Monthly", bdtPrice: 613, usdPrice: 5, period: "month", months: 1, lemonLink: LEMON_MONTHLY_LINK },
-    yearly:  { label: "Yearly",  bdtPrice: 6014, usdPrice: 49, period: "year", months: 12, save: "Save 30%", lemonLink: LEMON_YEARLY_LINK },
+    monthly: { label: "Monthly", bdtPrice: 1080, usdPrice: 9, period: "month", months: 1, lemonLink: LEMON_MONTHLY_LINK },
+    yearly:  { label: "Yearly",  bdtPrice: 10800, usdPrice: 90, period: "year", months: 12, save: "Save 30%", lemonLink: LEMON_YEARLY_LINK },
   };
   const selectedPlan = PLANS[plan];
 
@@ -2376,9 +2376,10 @@ function App() {
   const [searchTerm,         setSearchTerm]         = useState("");
   const [user,               setUser]               = useState(null);
   const [page,               setPage]               = useState("landing");
-  const [isDark,             setIsDark]             = useState(true);
+  const [isDark,             setIsDark]             = useState(false);
   const [showAdmin,          setShowAdmin]          = useState(false);
   const [showAnalytics,      setShowAnalytics]      = useState(false);
+  const [showTopPanel,       setShowTopPanel]       = useState(true);
   const [showUpgrade,        setShowUpgrade]        = useState(false);
   const [showSupportChat,    setShowSupportChat]    = useState(false);
   const [showAIAnalysis,     setShowAIAnalysis]     = useState(false);
@@ -2399,9 +2400,10 @@ function App() {
   const [editingFormat,      setEditingFormat]      = useState(null);
   const [history,            setHistory]            = useState([]);
   const [currentTableId,     setCurrentTableId]     = useState(null);
-  const [tabs,               setTabs]               = useState([makeNewTab("Sheet 1", ["ID", "Name", "Email", "Status"], 8)]);
+  const [tabs,               setTabs]               = useState([makeNewTab("Sheet 1", ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K"], 20)]);
   const [activeTabId,        setActiveTabId]        = useState(null);
   const [showAITable, setShowAITable] = useState(false);
+  const [hideEmptyRows, setHideEmptyRows] = useState(false);
   const [aiTableUsage, setAiTableUsage] = useState(0);
   const [aiBuildLoading, setAiBuildLoading] = useState(false);
   const [lifetimeTablesCreated, setLifetimeTablesCreated] = useState(1);
@@ -2491,6 +2493,11 @@ function App() {
 
   const handleCellChange = useCallback((rIdx, col, value) => {
     if (myShareRole === "viewer") return;
+    setUndoStack(prev => {
+      const snapshot = JSON.parse(JSON.stringify(rows));
+      return [...prev, snapshot].slice(-30);
+    });
+    setRedoStack([]);
     setTabs(prev => prev.map(t => {
       if (t.id !== activeTabId) return t;
       const updatedRows = [...t.rows];
@@ -2501,7 +2508,7 @@ function App() {
       };
       return { ...t, rows: updatedRows };
     }));
-  }, [activeTabId, myShareRole]);
+  }, [activeTabId, myShareRole, rows]);
 
   const applyCellFormat = useCallback((rIdx, col, fmt) => {
     setTabs(prev => prev.map(t => {
@@ -2849,7 +2856,7 @@ function App() {
 
   const newTab = templateData
     ? makeNewTab(templateData.name, templateData.columns, Math.max(templateData.sampleRows?.length || 0, 5))
-    : makeNewTab(`Sheet ${tabs.length + 1}`, ["ID", "Name", "Email", "Status"], 5);
+    : makeNewTab(`Sheet ${tabs.length + 1}`, ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K"], 20);
 
   if (templateData?.sampleRows?.length) {
     newTab.rows = templateData.sampleRows.map((rowArr) => {
@@ -2926,6 +2933,7 @@ function App() {
     setCurrentTableId(null);
     setSelectedRows(new Set());
     setSearchTerm("");
+    setRowHeights({});
   }, []);
 
   // ── Column Resize ──
@@ -2934,11 +2942,11 @@ function App() {
     e.stopPropagation();
     resizingCol.current = col;
     startX.current = e.clientX;
-    startWidth.current = colWidths[col] || 150;
+    startWidth.current = colWidths[col] || 75;
  
     const onMove = (ev) => {
       const diff = ev.clientX - startX.current;
-      const newWidth = Math.max(80, startWidth.current + diff);
+      const newWidth = Math.max(40, startWidth.current + diff);
       setColWidths(prev => ({ ...prev, [resizingCol.current]: newWidth }));
     };
     const onUp = () => {
@@ -2956,7 +2964,7 @@ function App() {
     e.stopPropagation();
     resizingRow.current = rIdx;
     startY.current = e.clientY;
-    startHeight.current = rowHeights[rIdx] || 44;
+    startHeight.current = rowHeights[rIdx] || 24;
  
     const onMove = (ev) => {
       const diff = ev.clientY - startY.current;
@@ -2997,8 +3005,8 @@ function App() {
     const snapshot = undoStack[undoStack.length - 1];
     setRedoStack(prev => [...prev, JSON.parse(JSON.stringify(rows))]);
     setUndoStack(prev => prev.slice(0, -1));
-    setRows(snapshot);
-  }, [undoStack, rows, setRows]);
+    setTabs(prev => prev.map(t => t.id !== activeTabId ? t : { ...t, rows: snapshot }));
+  }, [undoStack, rows, activeTabId]);
  
   // Redo
   const handleRedo = useCallback(() => {
@@ -3020,7 +3028,7 @@ function App() {
       const charLines = Math.ceil(val.length / 30);
       maxLines = Math.max(maxLines, lines, charLines);
     });
-    const newHeight = Math.max(44, Math.min(maxLines * 28, 200));
+    const newHeight = Math.max(24, Math.min(maxLines * 24, 200));
     setRowHeights(prev => ({ ...prev, [rIdx]: newHeight }));
   }, [rows, columns]);
  
@@ -3034,7 +3042,7 @@ function App() {
         const charLines = Math.ceil(val.length / 30);
         maxLines = Math.max(maxLines, lines, charLines);
       });
-      newHeights[rIdx] = Math.max(44, Math.min(maxLines * 28, 200));
+      newHeights[rIdx] = Math.max(24, Math.min(maxLines * 24, 200));
     });
     setRowHeights(newHeights);
   }, [rows, columns]);
@@ -3347,29 +3355,47 @@ function App() {
   }, [user]);
   // ── Copy Cell ──
   const applyToolbarFormat = useCallback((fmt) => {
-  if (!selectedCell) return;
-  const { rIdx, col } = selectedCell;
-  setTabs(prev => prev.map(t => {
-    if (t.id !== activeTabId) return t;
-    const updatedRows = [...t.rows];
-    const existing = updatedRows[rIdx]?.[col] || {};
-    const existingObj = typeof existing === "object" ? existing : { value: String(existing) };
-    updatedRows[rIdx] = {
-      ...updatedRows[rIdx],
-      [col]: {
-        ...existingObj,
-        ...(fmt.color !== undefined && { color: fmt.color }),
-        ...(fmt.bgColor !== undefined && { bgColor: fmt.bgColor }),
-        ...(fmt.fontSize !== undefined && { fontSize: fmt.fontSize }),
-        ...(fmt.fontWeight !== undefined && { fontWeight: fmt.fontWeight }),
-        ...(fmt.fontStyle !== undefined && { fontStyle: fmt.fontStyle }),
-        ...(fmt.textAlign !== undefined && { textAlign: fmt.textAlign }),
-        ...(fmt.textDecoration !== undefined && { textDecoration: fmt.textDecoration }),
-      },
-    };
-    return { ...t, rows: updatedRows };
-  }));
-}, [selectedCell, activeTabId]);
+    if (!selectedCell) return;
+    setTabs(prev => prev.map(t => {
+      if (t.id !== activeTabId) return t;
+      const updatedRows = [...t.rows];
+      const cellsToUpdate = [];
+      if (selectionStart && selectionEnd && !(selectionStart.rIdx === selectionEnd.rIdx && selectionStart.cIdx === selectionEnd.cIdx)) {
+        const minR = Math.min(selectionStart.rIdx, selectionEnd.rIdx);
+        const maxR = Math.max(selectionStart.rIdx, selectionEnd.rIdx);
+        const minC = Math.min(selectionStart.cIdx, selectionEnd.cIdx);
+        const maxC = Math.max(selectionStart.cIdx, selectionEnd.cIdx);
+        for (let r = minR; r <= maxR; r++) {
+          for (let c = minC; c <= maxC; c++) {
+            if (columns[c]) cellsToUpdate.push({ rIdx: r, col: columns[c] });
+          }
+        }
+      } else {
+        cellsToUpdate.push({ rIdx: selectedCell.rIdx, col: selectedCell.col });
+      }
+      cellsToUpdate.forEach(({ rIdx, col }) => {
+        if (!col || updatedRows[rIdx] === undefined) return;
+        const existing = updatedRows[rIdx]?.[col] || {};
+        const existingObj = typeof existing === "object" ? existing : { value: String(existing) };
+        updatedRows[rIdx] = {
+          ...updatedRows[rIdx],
+          [col]: {
+            ...existingObj,
+            ...(fmt.color !== undefined && { color: fmt.color }),
+            ...(fmt.bgColor !== undefined && { bgColor: fmt.bgColor }),
+            ...(fmt.fontSize !== undefined && { fontSize: fmt.fontSize }),
+            ...(fmt.fontWeight !== undefined && { fontWeight: fmt.fontWeight }),
+            ...(fmt.fontStyle !== undefined && { fontStyle: fmt.fontStyle }),
+            ...(fmt.textAlign !== undefined && { textAlign: fmt.textAlign }),
+            ...(fmt.textDecoration !== undefined && { textDecoration: fmt.textDecoration }),
+            ...(fmt.numberFormat !== undefined && { numberFormat: fmt.numberFormat }),
+            ...(fmt.whiteSpace !== undefined && { whiteSpace: fmt.whiteSpace }),
+          },
+        };
+      });
+      return { ...t, rows: updatedRows };
+    }));
+  }, [selectedCell, selectionStart, selectionEnd, activeTabId, columns]);
 
 const getSelectedCellFormat = useCallback(() => {
   if (!selectedCell) return {};
@@ -3384,6 +3410,8 @@ const getSelectedCellFormat = useCallback(() => {
     fontStyle:      cell.fontStyle      || "normal",
     textAlign:      cell.textAlign      || "left",
     textDecoration: cell.textDecoration || "none",
+    numberFormat:   cell.numberFormat   || "none",
+    whiteSpace:     cell.whiteSpace     || "nowrap",
   };
 }, [selectedCell, rows]);
   const handleCopyCell = useCallback((rIdx, col) => {
@@ -3490,8 +3518,10 @@ const getSelectedCellFormat = useCallback(() => {
   // ROW OPERATIONS
   // ============================================================
   const deleteRow = (idx) => {
-    if (window.confirm("Delete row?"))
-      setRows(rows.filter((_, i) => i !== idx).map((row, i) => ({ ...row, ID: { ...row.ID, value: String(i + 1) } })));
+    setRows(prev =>
+      prev.filter((_, i) => i !== idx)
+          .map((row, i) => ({ ...row, ID: { ...(row.ID || {}), value: String(i + 1) } }))
+    );
   };
 
   const deleteSelectedRows = () => {
@@ -3660,17 +3690,103 @@ const fillDownSelectedRows = () => {
     setTimeout(() => {
       const input = genText.toLowerCase();
       let newCols, finalTitle, rowCount = 10;
-      const rowMatch = input.match(/(\d+)\s*row/);
-      if (rowMatch) rowCount = parseInt(rowMatch[1]);
-      if (input.includes("salary") || input.includes("payroll")) {
-        newCols = ["ID", "Name", "Position", "Basic Salary", "Bonus", "Total"]; finalTitle = "Salary Sheet";
-      } else if (input.includes("student") || input.includes("school")) {
-        newCols = ["ID", "Name", "Roll", "Class", "Subject", "Mark", "Grade"]; finalTitle = "Student List";
-      } else { newCols = ["ID", "Name", "Email", "Status"]; finalTitle = genText.toUpperCase(); }
+
+      // Row count detect করো
+      const rowMatch = input.match(/(\d+)/);
+      if (rowMatch) rowCount = Math.min(parseInt(rowMatch[1]), 5000);
+
+      // ===== SALARY / PAYROLL =====
+      if (input.includes("salary") || input.includes("payroll") || input.includes("বেতন") || input.includes("মজুরি")) {
+        newCols = ["ID", "Name", "Position", "Department", "Basic Salary", "Bonus", "Deduction", "Net Salary", "Status"];
+        finalTitle = "Salary Sheet";
+
+      // ===== STUDENT / SCHOOL =====
+      } else if (input.includes("student") || input.includes("school") || input.includes("ছাত্র") || input.includes("শিক্ষার্থী") || input.includes("স্কুল")) {
+        newCols = ["ID", "Name", "Roll", "Class", "Section", "Math", "English", "Science", "Total", "Grade"];
+        finalTitle = "Student List";
+
+      // ===== ATTENDANCE =====
+      } else if (input.includes("attendance") || input.includes("হাজিরা") || input.includes("উপস্থিতি")) {
+        newCols = ["ID", "Name", "Date", "In Time", "Out Time", "Hours", "Status", "Remarks"];
+        finalTitle = "Attendance Sheet";
+
+      // ===== INVENTORY / STOCK =====
+      } else if (input.includes("inventory") || input.includes("stock") || input.includes("স্টক") || input.includes("পণ্য") || input.includes("product")) {
+        newCols = ["ID", "Product Name", "SKU", "Category", "Stock Qty", "Unit Price", "Total Value", "Supplier", "Status"];
+        finalTitle = "Inventory Tracker";
+
+      // ===== EXPENSE / BUDGET =====
+      } else if (input.includes("expense") || input.includes("budget") || input.includes("খরচ") || input.includes("বাজেট")) {
+        newCols = ["ID", "Date", "Category", "Description", "Amount", "Payment Method", "Status"];
+        finalTitle = "Expense Tracker";
+
+      // ===== INVOICE / BILL =====
+      } else if (input.includes("invoice") || input.includes("bill") || input.includes("ইনভয়েস") || input.includes("বিল")) {
+        newCols = ["ID", "Invoice No", "Client Name", "Date", "Item", "Qty", "Unit Price", "Total", "Status"];
+        finalTitle = "Invoice Sheet";
+
+      // ===== CRM / CUSTOMER =====
+      } else if (input.includes("crm") || input.includes("customer") || input.includes("client") || input.includes("কাস্টমার") || input.includes("গ্রাহক")) {
+        newCols = ["ID", "Name", "Company", "Email", "Phone", "City", "Stage", "Deal Value", "Last Contact"];
+        finalTitle = "CRM / Customer List";
+
+      // ===== EMPLOYEE / HR =====
+      } else if (input.includes("employee") || input.includes("staff") || input.includes("hr") || input.includes("কর্মী") || input.includes("কর্মচারী")) {
+        newCols = ["ID", "Name", "Department", "Position", "Join Date", "Phone", "Email", "Salary", "Status"];
+        finalTitle = "Employee List";
+
+      // ===== ORDER / SALES =====
+      } else if (input.includes("order") || input.includes("sales") || input.includes("অর্ডার") || input.includes("বিক্রয়")) {
+        newCols = ["ID", "Order No", "Customer", "Product", "Qty", "Unit Price", "Total", "Date", "Status"];
+        finalTitle = "Order / Sales Sheet";
+
+      // ===== TASK / PROJECT =====
+      } else if (input.includes("task") || input.includes("project") || input.includes("কাজ") || input.includes("প্রজেক্ট")) {
+        newCols = ["ID", "Task Name", "Assignee", "Priority", "Start Date", "Due Date", "Progress", "Status"];
+        finalTitle = "Task Tracker";
+
+      // ===== CONTACT / PHONE BOOK =====
+      } else if (input.includes("contact") || input.includes("phone book") || input.includes("যোগাযোগ") || input.includes("নম্বর")) {
+        newCols = ["ID", "Name", "Phone", "Email", "Address", "City", "Relation", "Notes"];
+        finalTitle = "Contact List";
+
+      // ===== MEDICINE / PHARMACY =====
+      } else if (input.includes("medicine") || input.includes("pharmacy") || input.includes("ওষুধ") || input.includes("ফার্মেসি")) {
+        newCols = ["ID", "Medicine Name", "Generic Name", "Category", "Stock", "Unit Price", "Expiry Date", "Supplier"];
+        finalTitle = "Medicine Stock";
+
+      // ===== RENT / PROPERTY =====
+      } else if (input.includes("rent") || input.includes("property") || input.includes("ভাড়া") || input.includes("বাড়ি")) {
+        newCols = ["ID", "Tenant Name", "Room/Unit", "Rent Amount", "Due Date", "Paid Date", "Status", "Remarks"];
+        finalTitle = "Rent Collection";
+
+      // ===== MARKS / RESULT =====
+      } else if (input.includes("result") || input.includes("marks") || input.includes("exam") || input.includes("ফলাফল") || input.includes("পরীক্ষা")) {
+        newCols = ["ID", "Name", "Roll", "Bengali", "English", "Math", "Science", "Social", "Total", "GPA"];
+        finalTitle = "Exam Result Sheet";
+
+      // ===== DONATION / FUND =====
+      } else if (input.includes("donation") || input.includes("fund") || input.includes("দান") || input.includes("চাঁদা")) {
+        newCols = ["ID", "Donor Name", "Phone", "Amount", "Date", "Purpose", "Payment Method", "Status"];
+        finalTitle = "Donation / Fund Collection";
+
+      // ===== MEMBER LIST =====
+      } else if (input.includes("member") || input.includes("সদস্য")) {
+        newCols = ["ID", "Name", "Phone", "Address", "Join Date", "Member Type", "Fee", "Status"];
+        finalTitle = "Member List";
+
+      // ===== DEFAULT =====
+      } else {
+        newCols = ["ID", "Name", "Description", "Category", "Value", "Date", "Status"];
+        finalTitle = genText.toUpperCase();
+      }
+
       const newRows = Array.from({ length: rowCount }, (_, i) => makeBlankRow(newCols, i + 1));
       updateActiveTab({ columns: newCols, rows: newRows, title: finalTitle, columnTypes: {}, columnFormats: {} });
-      setIsLoading(false); setGenText(""); setCurrentTableId(null);
-    }, 1200);
+      setIsLoading(false);
+      setGenText("");
+      setCurrentTableId(null);
+    }, 800);
   };
 
   // ============================================================
@@ -3920,17 +4036,14 @@ const clearAllHistory = () => {
   // CELL RENDERING
   // ============================================================
   const getColMinWidth = (col) => {
-    const colFmt   = columnFormats[col];
     const headerLen = col.length;
     const maxCellLen = rows.reduce((max, row) => {
       const v = cellVal(row[col]);
-      const cell = row[col];
-      const effectiveFontSize = (cell && typeof cell === "object" ? cell.fontSize : null) || colFmt?.fontSize || 14;
-      const len = v.length * (effectiveFontSize / 14);
-      return Math.max(max, len);
+      return Math.max(max, v.length);
     }, 0);
-    const maxLen = Math.max(headerLen * 1.1, maxCellLen, 8);
-    return `${Math.min(Math.max(maxLen * 7 + 30, 80), 300)}px`;
+    const maxLen = Math.max(headerLen, maxCellLen);
+    const width = maxLen * 6 + 16;
+    return `${Math.min(Math.max(width, 40), 75)}px`;
   };
 
   const getConditionalTextColor = (col, val) => {
@@ -3984,8 +4097,19 @@ const clearAllHistory = () => {
     const rawVal   = cellVal(cell);
     const val      = rawVal.startsWith("=") ? evaluateFormula(rawVal, rows, columns) : rawVal;
     const styleObj = buildCellStyle(col, cell);
-    const baseCls = `bg-transparent outline-none text-[11px] transition-all focus:bg-sky-500/[0.08] px-2 py-[3px] ${isDark ? "text-[#f1f6ff]" : "text-[#172033]"}`;
-    const inputStyle = { ...styleObj, width: "100%", minWidth: "max-content", boxSizing: "border-box" };
+    const cellObj2 = cell && typeof cell === "object" ? cell : null;
+    const numFmt   = cellObj2?.numberFormat || "none";
+    const formatVal = (v) => {
+      const n = parseFloat(v);
+      if (isNaN(n) || numFmt === "none") return v;
+      if (numFmt === "currency") return "$" + n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      if (numFmt === "percent") return (n).toFixed(2) + "%";
+      if (numFmt === "decimal2") return n.toFixed(2);
+      if (numFmt === "integer") return Math.round(n).toString();
+      return v;
+    };
+    const baseCls = `bg-transparent outline-none text-[11px] transition-all focus:bg-sky-500/[0.08] px-2 h-full w-full ${isDark ? "text-[#f1f6ff]" : "text-[#172033]"}`;
+    const inputStyle = { ...styleObj, width: "100%", minWidth: 0, boxSizing: "border-box" };
 
     if (col === "ID") return (
       <input type="text" value={val} readOnly
@@ -4027,7 +4151,7 @@ const clearAllHistory = () => {
 
     return (
       <div className="relative w-full">
-        <input type="text" value={val}
+        <input type="text" value={formatVal(val)}
           onFocus={e => {
             setSelectedCell({ rIdx, col });
             setFormulaBarVal(rawVal);
@@ -4168,12 +4292,17 @@ const clearAllHistory = () => {
             if (fmt.fontWeight === "bold") data.cell.styles.fontStyle = "bold";
           }
         };
+        const colWidthsPDF = columns.map(col => {
+          const maxLen = Math.max(col.length, ...rows.map(r => cellVal(r[col]).length));
+          return Math.min(Math.max(maxLen * 2.2 + 6, 12), 60);
+        });
         autoTable(docPDF, {
           head, body, startY: 32,
-          styles:            { fontSize: 9, cellPadding: 5, font: "helvetica", lineColor: [226, 232, 240], lineWidth: 0.3 },
-          headStyles:        { fillColor: [30, 41, 59], textColor: [148, 163, 184], fontStyle: "bold", fontSize: 9 },
+          styles:            { fontSize: 8, cellPadding: 2, font: "helvetica", lineColor: [226, 232, 240], lineWidth: 0.3, minCellHeight: 6 },
+          headStyles:        { fillColor: [30, 41, 59], textColor: [148, 163, 184], fontStyle: "bold", fontSize: 8 },
           alternateRowStyles: { fillColor: [248, 250, 252] },
           bodyStyles:        { fillColor: [255, 255, 255], textColor: [15, 23, 42] },
+          columnStyles:      Object.fromEntries(columns.map((_, i) => [i, { cellWidth: colWidthsPDF[i] }])),
           theme: "grid", didParseCell,
         });
       }
@@ -4206,14 +4335,25 @@ const clearAllHistory = () => {
   const filteredRows = useMemo(() => {
   const indexedRows = rows.map((row, originalIndex) => ({ row, originalIndex }));
 
-  if (!searchTerm) return indexedRows;
+  let result = indexedRows;
 
-  return indexedRows.filter(({ row }) =>
-    Object.values(row).some(v =>
-      cellVal(v).toLowerCase().includes(searchTerm.toLowerCase())
-    )
-  );
-}, [rows, searchTerm]);
+  if (searchTerm) {
+    result = result.filter(({ row }) =>
+      Object.values(row).some(v =>
+        cellVal(v).toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    );
+  }
+
+  if (hideEmptyRows) {
+    result = result.filter(({ row }) => {
+      const vals = Object.entries(row).filter(([k]) => k !== "ID");
+      return vals.some(([, v]) => cellVal(v).trim() !== "");
+    });
+  }
+
+  return result;
+}, [rows, searchTerm, hideEmptyRows]);
 
   if (page === "landing") return <LandingPage onLogin={handleGoogleLogin} isDark={isDark} onSupportClick={() => setShowSupportChat(true)} />;
 
@@ -4615,7 +4755,7 @@ const btnSuccess =
           <BannerAd isDark={isDark} />
 
           {/* ===== HEADER ===== */}
-          <header className={`${bgPanel} border ${borderColor} rounded-[1.75rem] px-4 py-3 shadow-xl flex flex-col md:flex-row justify-between items-center gap-3`}>
+          <header className={`${bgPanel} border ${borderColor} rounded-[1.75rem] px-4 py-1.5 shadow-xl flex flex-col md:flex-row justify-between items-center gap-1.5`}>
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
                 style={{ background: "linear-gradient(135deg, #6366f1, #22d3ee)" }}>
@@ -4643,7 +4783,7 @@ const btnSuccess =
               </div>
             </div>
 
-            <div className="flex flex-wrap justify-center md:justify-end gap-1 w-full md:max-w-[620px]">
+            <div className="flex flex-wrap justify-center md:justify-end gap-0.5 w-full md:max-w-[680px]">
               <button onClick={() => setIsDark(d => !d)} className={`px-2 py-1.5 rounded-lg font-black text-[9px] uppercase ${btnGhost}`} title="Toggle theme">
                 {isDark ? "☀️" : "🌙"}
               </button>
@@ -4705,6 +4845,38 @@ const btnSuccess =
 
               <button onClick={downloadExcel} className={`px-2 py-1.5 rounded-lg font-black text-[9px] uppercase ${btnSuccess}`}>Export Excel</button>
               <button onClick={downloadPDF}   className={`px-2 py-1.5 rounded-lg font-black text-[9px] uppercase ${btnDanger}`}>Export PDF</button>
+              <button onClick={() => setHideEmptyRows(v => !v)} className={`px-2 py-1.5 rounded-lg font-black text-[9px] uppercase transition-all ${hideEmptyRows ? "bg-amber-500 text-white" : isDark ? "bg-slate-700 text-slate-300 hover:bg-slate-600" : "bg-slate-200 text-slate-600 hover:bg-slate-300"}`}>{hideEmptyRows ? "Show All" : "Hide Empty"}</button>
+              <button onClick={() => {
+                const cols = columns;
+                const visibleRows = filteredRows;
+                const colW = (100 / cols.length).toFixed(2) + "%";
+                let html = `<html><head><title>Print</title><style>
+                  @page { size: A4 landscape; margin: 8mm; }
+                  body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
+                  h3 { font-size: 11px; margin-bottom: 5px; color: #333; }
+                  table { border-collapse: collapse; width: 100%; font-size: 9px; table-layout: fixed; }
+                  th, td { border: 1px solid #bbb; padding: 3px 4px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; width: ${colW}; }
+                  thead th { background: #dde6f5; font-weight: bold; }
+                  tr:nth-child(even) td { background: #f5f8ff; }
+                </style></head><body>`;
+                html += `<h3>${activeTab?.title || "Sheet"}</h3>`;
+                html += `<table><thead><tr>`;
+                cols.forEach(c => { html += `<th>${c}</th>`; });
+                html += `</tr></thead><tbody>`;
+                visibleRows.forEach(({ row }) => {
+                  html += `<tr>`;
+                  cols.forEach(c => {
+                    const v = typeof row[c] === "object" ? (row[c]?.value ?? "") : (row[c] ?? "");
+                    html += `<td>${v}</td>`;
+                  });
+                  html += `</tr>`;
+                });
+                html += `</tbody></table></body></html>`;
+                const w = window.open("", "_blank");
+                w.document.write(html);
+                w.document.close();
+                setTimeout(() => w.print(), 500);
+              }} className={`px-2 py-1.5 rounded-lg font-black text-[9px] uppercase transition-all ${isDark ? "bg-slate-700 text-slate-300 hover:bg-slate-600" : "bg-slate-200 text-slate-600 hover:bg-slate-300"}`}>🖨 Print</button>
               {ENABLE_AI_TABLE && (
                 <button
                   onClick={() => setShowAITable(true)}
@@ -4827,6 +4999,14 @@ const btnSuccess =
           <div className={`${bgPanel} border ${borderColor} rounded-b-[2rem] rounded-tr-[2rem] shadow-xl`} style={{ borderTopWidth: 0 }}>
             <div className="px-3 py-2">
 
+              {/* PANEL TOGGLE */}
+              <div className="flex justify-end mb-1">
+                <button onClick={() => setShowTopPanel(p => !p)}
+                  className={`text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-lg border transition-all ${isDark ? "border-[#1e3a5f] text-slate-500 hover:text-slate-300 hover:bg-white/5" : "border-slate-200 text-slate-400 hover:text-slate-600 hover:bg-slate-50"}`}>
+                  {showTopPanel ? "▲ Hide Tools" : "▼ Show Tools"}
+                </button>
+              </div>
+              {showTopPanel && <div>
               {/* TOOLS ROW — compact */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-2">
                 {/* AI Generator */}
@@ -4894,9 +5074,10 @@ const btnSuccess =
                   </div>
                 )}
               </div>
+              </div>}
               {/* ===== FORMULA BAR ===== */}
               {showFormulaBar && (
-                <div className={`mb-3 flex items-center gap-2 px-3 py-2 rounded-xl border ${borderColor} ${isDark ? "bg-[#070f1e]" : "bg-white shadow-sm"}`}>
+                <div className={`mb-3 flex items-center gap-2 px-3 py-2 rounded-xl border ${borderColor} ${isDark ? "bg-[#070f1e]" : "bg-white shadow-sm"}`} style={{ position: "sticky", top: 0, zIndex: 50 }}>
                   <div className={`px-2 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest flex-shrink-0 ${isDark ? "bg-[#0a1628] text-blue-400 border border-[#1e3a5f]" : "bg-blue-50 text-blue-600 border border-blue-200"}`}
                     style={{ minWidth: 60, textAlign: "center" }}>
                     {selectedCell ? `${selectedCell.col}${selectedCell.rIdx + 1}` : "fx"}
@@ -4939,9 +5120,10 @@ const btnSuccess =
                 const isCenter     = fmt.textAlign      === "center";
                 const isRight      = fmt.textAlign      === "right";
  
-                const tbBtn = (active, onClick, children) => (
+                const tbBtn = (active, onClick, children, tooltip) => (
                   <button
                     onClick={onClick}
+                    title={tooltip}
                     className={`h-8 px-2.5 rounded-lg text-xs font-black transition-all duration-150 flex items-center justify-center min-w-[32px] ${
                       active
                         ? isDark
@@ -4957,19 +5139,19 @@ const btnSuccess =
                 );
  
                 return (
-                  <div className={`mb-4 flex items-center gap-1 px-3 py-2 rounded-2xl border ${borderColor} ${isDark ? "bg-[#0a1628]" : "bg-white shadow-md"} flex-wrap`}>
+                  <div className={`mb-4 flex items-center gap-1 px-3 py-2 rounded-2xl border ${borderColor} ${isDark ? "bg-[#0a1628]" : "bg-white shadow-md"} flex-wrap`} style={{ position: "sticky", top: showFormulaBar ? 48 : 0, zIndex: 49 }}>
 
                     {tbBtn(false, () => handleUndo(),
-                      <span style={{ fontSize: 11, fontWeight: 900 }}>↩</span>
+                      <span style={{ fontSize: 11, fontWeight: 900 }}>↩</span>, "Undo (Ctrl+Z)"
                     )}
                     {tbBtn(false, () => handleRedo(),
-                      <span style={{ fontSize: 11, fontWeight: 900 }}>↪</span>
+                      <span style={{ fontSize: 11, fontWeight: 900 }}>↪</span>, "Redo (Ctrl+Y)"
                     )}
                     {tbBtn(showFindReplace, () => setShowFindReplace(f => !f),
-                      <span style={{ fontSize: 11, fontWeight: 900 }}>🔍</span>
+                      <span style={{ fontSize: 11, fontWeight: 900 }}>🔍</span>, "Find & Replace (Ctrl+H)"
                     )}
                     {tbBtn(false, () => autoFitAllRows(),
-                      <span style={{ fontSize: 10, fontWeight: 900 }}>Auto H</span>
+                      <span style={{ fontSize: 10, fontWeight: 900 }}>Auto H</span>, "Auto Fit Row Height"
                     )}
                     <select value={frozenCols} onChange={e => setFrozenCols(Number(e.target.value))}
                       className={`h-8 px-2 rounded-lg text-[10px] font-black border outline-none ${isDark ? "bg-[#0a1628] border-[#1e3a5f] text-slate-300" : "bg-white border-slate-200 text-slate-700 shadow-sm"}`}>
@@ -5061,7 +5243,19 @@ const btnSuccess =
  
                     {/* Divider */}
                     <div className={`w-px h-6 mx-1 ${isDark ? "bg-slate-700" : "bg-slate-200"}`} />
- 
+
+                    {/* Wrap Text */}
+                    {tbBtn(fmt.whiteSpace === "normal", () => applyToolbarFormat({ whiteSpace: fmt.whiteSpace === "normal" ? "nowrap" : "normal" }),
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
+                        <rect x="0" y="1" width="14" height="2" rx="1"/>
+                        <rect x="0" y="5" width="14" height="2" rx="1"/>
+                        <path d="M0 10h9.5a2.5 2.5 0 010 5H8m2-2l-2 2 2 2" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
+                      </svg>
+                    )}
+
+                    {/* Divider */}
+                    <div className={`w-px h-6 mx-1 ${isDark ? "bg-slate-700" : "bg-slate-200"}`} />
+
                     {/* Font Color */}
                     <div className="relative flex items-center">
                       <label className={`h-8 px-2 rounded-lg flex items-center gap-1.5 cursor-pointer transition-all text-[10px] font-black ${
@@ -5095,6 +5289,53 @@ const btnSuccess =
                       </label>
                     </div>
  
+                    {/* Number Format */}
+                    <select
+                      disabled={!selectedCell}
+                      value={fmt.numberFormat || "none"}
+                      onChange={e => applyToolbarFormat({ numberFormat: e.target.value })}
+                      className={`h-8 px-2 rounded-lg text-[10px] font-black border outline-none transition-all ${isDark ? "bg-[#0a1628] border-[#1e3a5f] text-slate-300" : "bg-white border-slate-200 text-slate-600"} ${!selectedCell ? "opacity-30 pointer-events-none" : ""}`}
+                      title="Number Format"
+                    >
+                      <option value="none">123</option>
+                      <option value="currency">$ USD</option>
+                      <option value="percent">% PCT</option>
+                      <option value="decimal2">.00</option>
+                      <option value="integer">#</option>
+                    </select>
+
+                    {/* Insert Row */}
+                    <button
+                      onClick={() => addRow()}
+                      className={`h-8 px-2.5 rounded-lg text-[10px] font-black transition-all ${isDark ? "text-slate-400 hover:bg-white/8 hover:text-emerald-400" : "text-slate-500 hover:bg-slate-100 hover:text-emerald-600"}`}
+                      title="Insert Row"
+                    >+R</button>
+
+                    {/* Insert Column */}
+                    <button
+                      onClick={() => addColumn()}
+                      className={`h-8 px-2.5 rounded-lg text-[10px] font-black transition-all ${isDark ? "text-slate-400 hover:bg-white/8 hover:text-emerald-400" : "text-slate-500 hover:bg-slate-100 hover:text-emerald-600"}`}
+                      title="Insert Column"
+                    >+C</button>
+
+                    {/* Divider */}
+                    <div className={`w-px h-6 mx-1 ${isDark ? "bg-slate-700" : "bg-slate-200"}`} />
+
+                    {/* Auto Number */}
+                    <button onClick={autoNumberRows}
+                      className={`h-8 px-2.5 rounded-lg text-[10px] font-black transition-all ${isDark ? "text-slate-400 hover:bg-white/8 hover:text-slate-200" : "text-slate-500 hover:bg-slate-100"}`}
+                      title="Auto Number">№</button>
+
+                    {/* Clean Spaces */}
+                    <button onClick={cleanData}
+                      className={`h-8 px-2.5 rounded-lg text-[10px] font-black transition-all ${isDark ? "text-slate-400 hover:bg-white/8 hover:text-slate-200" : "text-slate-500 hover:bg-slate-100"}`}
+                      title="Clean Spaces">⌥</button>
+
+                    {/* Remove Empty */}
+                    <button onClick={removeEmptyRows}
+                      className={`h-8 px-2.5 rounded-lg text-[10px] font-black transition-all ${isDark ? "text-slate-400 hover:bg-white/8 hover:text-red-400" : "text-slate-500 hover:bg-slate-100 hover:text-red-500"}`}
+                      title="Remove Empty Rows">✕R</button>
+
                     {/* Clear Format */}
                     <button
                       onClick={() => {
@@ -5286,12 +5527,12 @@ const btnSuccess =
 )}
 
               {/* ===== TABLE ===== */}
-              <div className={`${bgSubtle} rounded-2xl border ${borderColor} shadow-inner overflow-hidden`}>
-                <div className="ss-scroll-container" ref={tableRef} style={{ overflowX: "auto", overflowY: "auto", maxHeight: "82vh", WebkitOverflowScrolling: "touch" }}>
-                  <table className="border-collapse" style={{ tableLayout: "auto", width: "max-content", minWidth: "100%" }}>
+              <div className={`print-table-area ${bgSubtle} rounded-2xl border ${borderColor} shadow-inner overflow-hidden`} style={{ width: "100%", maxWidth: "100%" }}>
+                <div className="ss-scroll-container" ref={tableRef} style={{ overflowX: "auto", overflowY: "auto", maxHeight: "60vh", WebkitOverflowScrolling: "touch" }}>
+                  <table className="border-collapse" style={{ tableLayout: "auto", width: "100%", minWidth: "100%" }}>
                     <thead className={`${tableHeadCls} sticky top-0 z-10 border-b ${borderColor}`}>
                       <tr>
-                        <th className={`px-3 py-4 border-r ${borderColor} sticky left-0 z-20`}
+                        <th className={`px-3 py-2 border-r ${borderColor} sticky left-0 z-20`}
                           style={{ background: isDark ? "#070c17" : "#f8fafc", width: "44px" }}>
                           <input type="checkbox"
                             checked={selectedRows.size === rows.length && rows.length > 0}
@@ -5306,15 +5547,16 @@ const btnSuccess =
                               onDragStart={() => handleColDragStart(i)}
                               onDragOver={e => handleColDragOver(e, i)}
                               onDrop={() => handleColDrop(i)}
-                              className={`py-4 font-black text-[10px] uppercase border-r ${borderColor} tracking-widest whitespace-nowrap transition-all ${dragOverColIdx === i ? "bg-indigo-500/10" : ""}`}
+                              className={`py-2 font-black text-[10px] uppercase border-r ${borderColor} tracking-widest transition-all ${dragOverColIdx === i ? "bg-indigo-500/10" : ""}`}
                               style={{
                                 minWidth: colWidths[col] ? `${colWidths[col]}px` : getColMinWidth(col),
                                 width: col === "ID" ? "60px" : (colWidths[col] ? `${colWidths[col]}px` : undefined),
                                 backgroundColor: colFmt?.bgColor ? colFmt.bgColor + "18" : undefined,
-                                padding: "0 20px",
+                                padding: "0 6px",
                                 cursor: col !== "ID" ? "grab" : "default",
                                 color: isDark ? "#d7e6ff" : "#18324f",
                                 position: "relative",
+                                textAlign: colFmt?.textAlign || "left",
                               }}>
                               <span onClick={e => handleColumnHeaderClick(e, col)}
                                 className="cursor-pointer transition-colors flex items-center gap-2 hover:text-indigo-400 group select-none"
@@ -5351,15 +5593,7 @@ const btnSuccess =
                             </th>
                           );
                         })}
-                        <th className={`px-4 py-4 ${tableHeadCls} border-r ${borderColor}`} style={{ width: "56px" }}>
-                          <button onClick={addColumn}
-                            className={`w-7 h-7 rounded-xl border text-sm font-black transition-all ${
-                              isDark
-                                ? "bg-slate-800 border-slate-700 text-slate-400 hover:bg-indigo-500/20 hover:border-indigo-500/40 hover:text-indigo-400"
-                                : "bg-slate-100 border-slate-200 text-slate-400 hover:bg-indigo-50 hover:border-indigo-200 hover:text-indigo-600"
-                            }`}>+</button>
-                        </th>
-                        <th className={`${tableHeadCls}`} style={{ width: "40px" }}></th>
+                        <th className={`${tableHeadCls}`} style={{ width: "0px", padding: 0 }}></th>      
                       </tr>
                     </thead>
 
@@ -5373,7 +5607,9 @@ const btnSuccess =
                           className={`transition-all group/row ${getRowStyle(row)} ${dragOverRowIdx === originalIndex ? "opacity-40" : ""} ${isDark ? "hover:bg-white/[0.012]" : "hover:bg-slate-50/80"}`}
                           style={{
                             cursor: "grab",
-                            height: rowHeights[originalIndex] ? `${rowHeights[originalIndex]}px` : undefined
+                            height: `${rowHeights[originalIndex] || 26}px`,
+                            maxHeight: `${rowHeights[originalIndex] || 26}px`,
+                            overflow: "hidden"
                           }}>
                           <td className={`px-3 py-0 border-r ${borderColor} sticky left-0`}
                             style={{ background: isDark ? "#0a1018" : "#ffffff", zIndex: 5, width: "44px", position: freezeCol ? "sticky" : "relative", left: freezeCol ? 0 : undefined }}>
@@ -5388,7 +5624,7 @@ const btnSuccess =
                             const tdBg    = cellObj?.bgColor || (colFmt?.bgColor ? colFmt.bgColor + "12" : undefined);
                             if (hiddenCols.has(col)) return null;
                             return (
-                              <td key={cIdx} className={`border-r ${borderColor} p-0 relative group/cell transition-colors ${
+                              <td key={cIdx} className={`border-r ${borderColor} p-0 relative group/cell transition-colors overflow-hidden ${
                                 isCellInSelection(originalIndex, cIdx)
                                   ? isDark
                                     ? "bg-blue-600/20 ring-1 ring-inset ring-blue-500/40"
@@ -5396,13 +5632,13 @@ const btnSuccess =
                                   : ""
                               }`}
                                 style={{ minWidth: getColMinWidth(col), backgroundColor: tdBg,position: cIdx < frozenCols ? "sticky" : "relative",
-                                left: cIdx < frozenCols ? `${44 + cIdx * 150}px` : undefined,
+                                left: cIdx < frozenCols ? `${44 + cIdx * (colWidths[columns[cIdx]] || 120)}px` : undefined,
                                 zIndex: cIdx < frozenCols ? 4 : undefined,
-                                background: cIdx < frozenCols ? (isDark ? "#0a1018" : "#ffffff") : (tdBg || undefined), overflow: "visible", whiteSpace: "nowrap", userSelect: "text", WebkitUserSelect: "text", cursor: "text" }}
+                                background: cIdx < frozenCols ? (isDark ? "#0a1018" : "#ffffff") : (tdBg || undefined), overflow: "visible", whiteSpace: (cell && typeof cell === "object" ? cell.whiteSpace : null) || "nowrap", userSelect: "text", WebkitUserSelect: "text", cursor: "text", verticalAlign: "middle", lineHeight: "1" }}
                                 onMouseDown={e => {
                                   e.stopPropagation();
                                   if (e.shiftKey && selectionStart) {
-                                    // Shift+click = range extend
+                                    e.preventDefault();
                                     setSelectionEnd({ rIdx: originalIndex, cIdx });
                                   } else {
                                     setSelectionStart({ rIdx: originalIndex, cIdx });
@@ -5452,32 +5688,8 @@ const btnSuccess =
                             );
                           })}
                           <td className={`border-r ${borderColor} p-2`}></td>
-                          {/* Row resize handle */}
-                          <td className="p-0 relative" style={{ width: "4px" }}>
-                            <div
-                              onMouseDown={e => handleRowResizeStart(e, originalIndex)}
-                              className="absolute bottom-0 left-0 right-0 h-1 cursor-row-resize group/rowresize flex items-center justify-center"
-                              style={{ zIndex: 10 }}>
-                              <div className="w-6 h-0.5 rounded-full opacity-0 group-hover/rowresize:opacity-100 transition-opacity"
-                                style={{ backgroundColor: "#d4af37" }} />
-                            </div>
-                          </td>
-                          <td className="text-center py-0 opacity-0 group-hover/row:opacity-100 transition-opacity px-2" style={{ width: "40px" }}>
-                          <button
-                            onClick={() => {
-                              setHiddenRows(prev => {
-                                const next = new Set(prev);
-                                next.add(originalIndex);
-                                return next;
-                              });
-                            }}
-                            className={`opacity-0 group-hover/row:opacity-100 transition-opacity text-[9px] font-black px-2 py-1 rounded-lg mr-1 ${isDark ? "text-slate-500 hover:bg-slate-800 hover:text-slate-300" : "text-slate-400 hover:bg-slate-100"}`}
-                            title="Hide Row"
-                          >
-                            Hide
-                          </button>
-                            <button onClick={() => deleteRow(originalIndex)} className="text-red-500/60 hover:text-red-500 transition-colors text-[9px] font-black uppercase flex-shrink-0">✖</button>
-                          </td>
+                          
+                          
                         </tr>
                       ))}
                     </tbody>
@@ -5485,13 +5697,8 @@ const btnSuccess =
                 </div>
 
                 {/* Table Footer */}
-                <div className={`px-5 py-4 border-t ${borderColor} ${bgSubtle} flex flex-col md:flex-row justify-between items-start md:items-center gap-3`}>
-                <div className="flex flex-wrap items-center gap-2">
-                  <button onClick={addRow}
-                    className={`px-4 py-2 rounded-xl font-black text-[10px] uppercase ${btnPrimary}`}>
-                    Add Row
-                  </button>
-
+                <div className={`px-3 py-1 border-t ${borderColor} ${bgSubtle} flex flex-wrap justify-between items-center gap-2`}>
+                <div className="flex flex-wrap items-center gap-2">             
                   {(hiddenRows.size > 0 || hiddenCols.size > 0) && (
                     <div className="flex items-center gap-2">
                       {hiddenRows.size > 0 && (
@@ -5508,20 +5715,7 @@ const btnSuccess =
                       )}
                     </div>
                   )}
-                  <button onClick={autoNumberRows}
-                    className={`px-4 py-2 rounded-xl font-black text-[10px] uppercase ${btnGhost}`}>
-                    Auto Number
-                  </button>
-
-                  <button onClick={cleanData}
-                    className={`px-4 py-2 rounded-xl font-black text-[10px] uppercase ${btnGhost}`}>
-                    Clean Spaces
-                  </button>
-
-                  <button onClick={removeEmptyRows}
-                    className={`px-4 py-2 rounded-xl font-black text-[10px] uppercase ${btnGhost}`}>
-                    Remove Empty
-                  </button>
+                  
                 </div>
                   <div className="flex items-center gap-4">
                     <span className={`text-[9px] ${textSub} font-mono`}>{rows.length} rows · {columns.length} cols</span>
@@ -5640,6 +5834,8 @@ const btnSuccess =
         th { -webkit-user-select: none !important; user-select: none !important; }
         th span.select-none { -webkit-user-select: none !important; user-select: none !important; }
         .flex-1.overflow-y-auto::-webkit-scrollbar { display: none; }
+        .ss-scroll-container tbody tr td { padding-top: 0 !important; padding-bottom: 0 !important; vertical-align: middle !important; }
+        .ss-scroll-container tbody tr td input { padding-top: 0 !important; padding-bottom: 0 !important; }
         /* Mobile Responsive */
         @media (max-width: 768px) {
           .mobile-hide { display: none !important; }
@@ -5682,6 +5878,48 @@ const btnSuccess =
         thead th span { visibility: visible !important; opacity: 1 !important; display: flex !important; }
         button:active { transform: scale(0.97); }
         button:active.no-scale { transform: none; }
+
+        /* Row hover highlight */
+        .ss-scroll-container tbody tr:hover td {
+          background-color: ${isDark ? "rgba(99,130,255,0.07)" : "rgba(59,100,220,0.06)"} !important;
+          transition: background-color 0.12s ease;
+        }
+
+        /* Print styles */
+        @media print {
+          body * { visibility: hidden !important; }
+          .ss-scroll-container { overflow: visible !important; max-height: none !important; height: auto !important; }
+          .print-table-area, .print-table-area * { visibility: visible !important; }
+          .print-table-area {
+            position: fixed !important;
+            top: 0; left: 0;
+            width: 100vw !important;
+            padding: 20px !important;
+            background: white !important;
+          }
+          .print-table-area table {
+            width: 100% !important;
+            border-collapse: collapse !important;
+            font-size: 11px !important;
+          }
+          .print-table-area th, .print-table-area td {
+            border: 1px solid #ccc !important;
+            padding: 4px 8px !important;
+            color: #000 !important;
+            background: white !important;
+          }
+          .print-table-area thead th {
+            background: #f0f0f0 !important;
+            font-weight: bold !important;
+          }
+          .print-table-area input {
+            border: none !important;
+            background: transparent !important;
+            font-size: 11px !important;
+            color: #000 !important;
+            width: 100% !important;
+          }
+        }
       `}</style>
     </div>
   );
