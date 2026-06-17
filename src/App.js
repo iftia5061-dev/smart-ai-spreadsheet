@@ -62,7 +62,7 @@ const LEMON_APP_LINK = "https://ifti.gumroad.com/l/ydknwu";
 const LEMON_MONTHLY_LINK = "https://ifti.gumroad.com/l/ydknwu";
 const LEMON_YEARLY_LINK = "https://ifti.gumroad.com/l/sfzmsb";
 const LEMON_DESKTOP_LINK = "https://ifti.gumroad.com/l/ydknwu";
-const LEMON_PHONE_LINK = "https://ifti.gumroad.com/l/ydknwu";
+const LEMON_PHONE_LINK = "https://ifti.gumroad.com/l/qpmsr";
 const SUPPORT_LINK = "mailto:iftia5061@gmail.com?subject=SheetMind%20Payment%20Support";
 const AUTOSAVE_DELAY = 1500;
 const AI_FREE_TABLE_LIMIT = 2;
@@ -480,6 +480,121 @@ function MiniPieChart({ data, labels }) {
 }
 
 // ============================================================
+// BLOG DATA
+// ============================================================
+const BLOG_POSTS = [
+  {
+    slug: "ai-spreadsheet-automation-tips",
+    title: "5 Ways to Use AI to Automate Your Spreadsheet Work",
+    excerpt: "Discover practical ways AI-powered tools like SheetMind can cut hours off your weekly data entry and reporting tasks.",
+    date: "2026-04-12",
+    readTime: "5 min read",
+    content: [
+      "Manual spreadsheet work is one of the biggest time drains in small offices and freelance businesses. Every week, hours disappear into copying numbers between sheets, formatting tables, and double-checking totals by hand. AI-powered tools are changing that by taking over the repetitive parts of the job so people can focus on decisions instead of data entry.",
+      "The first big win is automatic table generation. Instead of building a spreadsheet structure from scratch, you can describe what you need in plain language and let the AI suggest columns, data types, and starting rows. This is especially useful for recurring formats like invoices, inventory logs, or weekly sales reports.",
+      "Second, AI can help clean messy data. Inconsistent date formats, duplicate entries, and typos are common in spreadsheets that have been edited by multiple people over time. AI-assisted tools can flag these issues automatically, saving the tedious process of scanning row by row.",
+      "Third, smart autocomplete speeds up data entry itself. As you type, the system can suggest likely values based on patterns already in your sheet, which is a small change that adds up to real time savings across hundreds of rows.",
+      "Fourth, AI can generate quick summaries of your data without writing a single formula. Asking a plain question like 'what was our highest expense category last month' can return an answer instantly, instead of requiring a pivot table or chart.",
+      "Finally, automation extends to formatting and exports. Once your data is ready, AI tools can apply consistent styling and prepare clean Excel or PDF exports for clients, removing one more manual step from your workflow.",
+      "Tools like SheetMind combine several of these capabilities directly inside a browser-based spreadsheet, so you do not need separate software for each task. As AI features mature, the gap between manual spreadsheet work and automated data management will keep narrowing, making it easier for small teams to operate at the speed of much larger ones.",
+    ],
+  },
+  {
+    slug: "spreadsheet-for-small-business",
+    title: "Choosing the Right Spreadsheet Tool for a Small Business",
+    excerpt: "A practical comparison of what small business owners should look for when picking spreadsheet software in 2026.",
+    date: "2026-03-28",
+    readTime: "4 min read",
+    content: [
+      "Small business owners often start with whatever spreadsheet tool is already installed on their computer, without comparing alternatives. As the business grows, the limitations of that choice become obvious: no real-time collaboration, no cloud backup, and clunky sharing with clients or employees.",
+      "The first thing to evaluate is cloud accessibility. A spreadsheet that only lives on one computer is a liability — if that machine is lost, stolen, or simply not nearby, the business loses access to critical records like inventory, payroll, or client lists. Cloud-based tools solve this by keeping data backed up automatically and accessible from any device.",
+      "Second, consider collaboration. Many small businesses involve more than one person touching the same records, whether it is a manager updating inventory while a bookkeeper checks payroll. Tools that support real-time multi-user editing with permission controls prevent the common problem of conflicting versions emailed back and forth.",
+      "Third, look at export flexibility. Even if your daily work happens inside a spreadsheet app, clients, accountants, and government forms often require Excel or PDF files. A good tool should let you export cleanly without reformatting everything by hand.",
+      "Fourth, cost matters, but so does the upgrade path. Many businesses start with free tiers and only need to pay once their usage grows past a certain point. Look for tools with a clear, affordable upgrade path rather than an all-or-nothing pricing model.",
+      "Finally, ease of use matters more than feature count for most small businesses. A tool packed with advanced functions is not helpful if your team avoids using it because it feels complicated. Simpler, faster interfaces tend to get adopted more consistently across a small team.",
+      "Weighing these factors against your specific workflow — inventory, payroll, client records, or project tracking — will help you choose a spreadsheet tool that actually gets used day to day, instead of one that gets abandoned after the first few weeks.",
+    ],
+  },
+  {
+    slug: "excel-vs-cloud-spreadsheets",
+    title: "Excel vs Cloud Spreadsheets: What's the Real Difference?",
+    excerpt: "Excel isn't going anywhere, but cloud spreadsheet tools solve problems that traditional desktop software simply can't.",
+    date: "2026-03-10",
+    readTime: "4 min read",
+    content: [
+      "Microsoft Excel has been the default spreadsheet tool for decades, and for good reason — it is powerful, familiar, and deeply integrated into many businesses. But cloud-based spreadsheet tools have grown for a specific set of reasons that are worth understanding before deciding which fits your work better.",
+      "The most obvious difference is access. A file saved locally in Excel lives on one machine unless manually copied or emailed elsewhere. Cloud spreadsheets are accessible from any device with a browser, which matters for anyone who works across a laptop, phone, or multiple office computers.",
+      "Real-time collaboration is the second major difference. While newer versions of Excel support some shared editing through OneDrive, cloud-native tools are generally built around simultaneous multi-user editing from day one, with permission systems that control exactly who can view or edit specific tables.",
+      "Backup and version safety also differ. Local Excel files can be lost to a crashed hard drive or accidental deletion unless you have a separate backup routine. Cloud tools save automatically and continuously, which removes one common point of failure for small businesses without dedicated IT support.",
+      "On the other hand, Excel still wins for extremely complex formula work, large-scale financial modeling, and offline use in places with unreliable internet. Cloud tools are generally better suited to day-to-day operational data — inventory, client records, schedules — rather than heavy financial analysis.",
+      "For many small teams, the practical answer is not choosing one over the other completely, but using cloud spreadsheet tools for collaborative, everyday record-keeping, while reserving Excel for deep analytical work that benefits from its mature formula engine.",
+    ],
+  },
+];
+
+function BlogList({ onSelectPost, isDark }) {
+  return (
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {BLOG_POSTS.map((post) => (
+        <button
+          key={post.slug}
+          onClick={() => onSelectPost(post.slug)}
+          className="flex h-full flex-col rounded-[1.5rem] border border-[#c8d7ec] bg-white p-5 text-left shadow-[0_18px_45px_rgba(43,76,126,0.09)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_24px_65px_rgba(43,76,126,0.14)]"
+        >
+          <p className="mb-2 text-[9px] font-black uppercase tracking-[0.24em] text-[#8aa0bd]">
+            {post.date} • {post.readTime}
+          </p>
+          <h3 className="mb-2 text-sm font-black uppercase tracking-tight text-[#172033]">{post.title}</h3>
+          <p className="text-xs leading-relaxed text-[#5f6f89]">{post.excerpt}</p>
+          <span className="mt-4 text-[10px] font-black uppercase tracking-widest text-[#2457d6]">Read article →</span>
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function BlogPost({ slug, onBack, isDark }) {
+  const post = BLOG_POSTS.find((p) => p.slug === slug);
+  if (!post) return null;
+  return (
+    <div className="rounded-[1.5rem] border border-[#c8d7ec] bg-white p-6 shadow-[0_18px_45px_rgba(43,76,126,0.09)] sm:p-8">
+      <button onClick={onBack} className="mb-5 text-[10px] font-black uppercase tracking-widest text-[#2457d6]">← Back to blog</button>
+      <p className="mb-2 text-[9px] font-black uppercase tracking-[0.24em] text-[#8aa0bd]">{post.date} • {post.readTime}</p>
+      <h1 className="mb-5 text-xl font-black uppercase tracking-tight text-[#172033] sm:text-2xl">{post.title}</h1>
+      <div className="space-y-4">
+        {post.content.map((para, i) => (
+          <p key={i} className="text-sm leading-relaxed text-[#5f6f89]">{para}</p>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function BlogPage({ onBackToHome, isDark }) {
+  const [selectedSlug, setSelectedSlug] = useState(null);
+  return (
+    <div className="min-h-screen bg-[#eef4ff] text-[#172033] font-sans" style={{ fontFamily: "'DM Mono','Fira Mono',monospace" }}>
+      <main className="mx-auto w-full max-w-[1480px] px-4 pb-10 pt-4 sm:px-6 lg:px-8">
+        <div className="mb-4 flex items-center justify-between">
+          <button onClick={onBackToHome} className="text-[10px] font-black uppercase tracking-widest text-[#2457d6]">← Back to SheetMind</button>
+        </div>
+        <section className="rounded-[2rem] border border-[#c8d7ec] bg-white/78 p-4 shadow-[0_30px_95px_rgba(43,76,126,0.14)] backdrop-blur-xl sm:p-6 lg:p-8">
+          <p className="mb-2 text-[10px] font-black uppercase tracking-[0.34em] text-[#3978d8]">SheetMind Blog</p>
+          <h1 className="mb-6 text-2xl font-black uppercase tracking-tight text-[#172033] sm:text-3xl">
+            Tips, guides, and updates
+          </h1>
+          {selectedSlug ? (
+            <BlogPost slug={selectedSlug} onBack={() => setSelectedSlug(null)} isDark={isDark} />
+          ) : (
+            <BlogList onSelectPost={setSelectedSlug} isDark={isDark} />
+          )}
+        </section>
+      </main>
+    </div>
+  );
+}
+
+// ============================================================
 // LANDING PAGE
 // ============================================================
 function LandingPage({ onLogin, isDark, onSupportClick }) {
@@ -503,7 +618,7 @@ function LandingPage({ onLogin, isDark, onSupportClick }) {
     {
       id: "monthly",
       name: "Monthly Pro",
-      price: "$9",
+      price: "$4",
       period: "per month",
       tone: "blue",
       badge: "Popular",
@@ -515,7 +630,7 @@ function LandingPage({ onLogin, isDark, onSupportClick }) {
     {
       id: "yearly",
       name: "Yearly Pro",
-      price: "$90",
+      price: "$50",
       period: "per year",
       tone: "gold",
       badge: "Best Value",
@@ -538,7 +653,7 @@ function LandingPage({ onLogin, isDark, onSupportClick }) {
     {
       id: "phone",
       name: "Phone App",
-      price: "$15",
+      price: "$10",
       period: "one time",
       tone: "green",
       description: "Mobile app for quick field data work.",
@@ -636,6 +751,54 @@ function LandingPage({ onLogin, isDark, onSupportClick }) {
           </div>
         </section>
 
+        <section className="mt-6 rounded-[1.5rem] border border-[#c8d7ec] bg-white p-6 shadow-[0_18px_45px_rgba(43,76,126,0.09)] sm:p-8">
+          <p className="mb-2 text-[10px] font-black uppercase tracking-[0.34em] text-[#3978d8]">About SheetMind</p>
+          <h2 className="mb-4 text-xl font-black uppercase tracking-tight text-[#172033] sm:text-2xl">
+            What is SheetMind and who is it for?
+          </h2>
+          <p className="mb-4 text-sm leading-relaxed text-[#5f6f89]">
+            SheetMind is a cloud-based, AI-assisted spreadsheet tool built for freelancers, small offices, and
+            growing teams who need a faster alternative to traditional spreadsheet software. Instead of juggling
+            complex formulas and clunky desktop programs, SheetMind lets you build, edit, and share tables directly
+            in your browser, with changes saved automatically to the cloud so your data is never lost.
+          </p>
+          <p className="mb-6 text-sm leading-relaxed text-[#5f6f89]">
+            Whether you are tracking inventory, managing payroll, organizing a student list, running a small CRM,
+            or preparing an invoice for a client, SheetMind gives you the structure of a spreadsheet with the
+            simplicity of a modern app. Real-time collaboration means your team can work on the same table at the
+            same time, and one-click exports to Excel or PDF make it easy to share finished work with anyone.
+          </p>
+
+          <h3 className="mb-4 text-base font-black uppercase tracking-tight text-[#172033]">How SheetMind Works</h3>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            {[
+              {
+                step: "1",
+                title: "Sign in with Google",
+                body: "Create your free account in seconds using your existing Google login — no separate password to remember.",
+              },
+              {
+                step: "2",
+                title: "Build your table",
+                body: "Add columns, set data types, and start entering rows. Use templates to get started faster for common use cases.",
+              },
+              {
+                step: "3",
+                title: "Save, share, export",
+                body: "Your work auto-saves to the cloud. Invite collaborators by email, or export to Excel and PDF when you are done.",
+              },
+            ].map((item) => (
+              <div key={item.step} className="rounded-2xl border border-[#d8e4f3] bg-[#f7fbff] p-4">
+                <span className="mb-2 inline-flex h-7 w-7 items-center justify-center rounded-full bg-[#2457d6] text-xs font-black text-white">
+                  {item.step}
+                </span>
+                <h4 className="mt-2 text-xs font-black uppercase tracking-wide text-[#2457d6]">{item.title}</h4>
+                <p className="mt-2 text-xs leading-relaxed text-[#5f6f89]">{item.body}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
         <section className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-3">
           {[
             {
@@ -656,6 +819,53 @@ function LandingPage({ onLogin, isDark, onSupportClick }) {
               <p className="mt-3 text-xs leading-relaxed text-[#5f6f89]">{item.body}</p>
             </div>
           ))}
+        </section>
+
+        <section className="mt-6 rounded-[1.5rem] border border-[#c8d7ec] bg-white p-6 shadow-[0_18px_45px_rgba(43,76,126,0.09)] sm:p-8">
+          <p className="mb-2 text-[10px] font-black uppercase tracking-[0.34em] text-[#3978d8]">FAQ</p>
+          <h2 className="mb-5 text-xl font-black uppercase tracking-tight text-[#172033] sm:text-2xl">
+            Frequently Asked Questions
+          </h2>
+          <div className="space-y-4">
+            {[
+              {
+                q: "Is SheetMind free to use?",
+                a: "Yes. The Free Start plan lets you create up to 4 lifetime sheets with cloud save, PDF and Excel export, and Google login, with no payment required.",
+              },
+              {
+                q: "Do I need to install anything?",
+                a: "No installation is required for the web version. SheetMind runs entirely in your browser. Desktop and phone apps are also available if you prefer a native app experience.",
+              },
+              {
+                q: "Can multiple people work on the same sheet?",
+                a: "Yes. Premium plans support real-time collaboration, so you can invite teammates by email and edit the same table together.",
+              },
+              {
+                q: "What file formats can I export to?",
+                a: "You can export any table to Excel (.xlsx) or PDF directly from the app, making it easy to share finished work with clients or colleagues.",
+              },
+              {
+                q: "How do I upgrade to a Premium plan?",
+                a: "Choose Monthly or Yearly Pro from the pricing section above. International users can pay through Lemon Squeezy, and Bangladesh users can pay with bKash, with Premium activated after admin approval.",
+              },
+              {
+                q: "What happens to my data if I cancel Premium?",
+                a: "Your existing sheets remain accessible. You will simply move back to the Free plan limits going forward, and your saved data is not deleted.",
+              },
+              {
+                q: "Is my data secure?",
+                a: "Yes. SheetMind uses Google Firebase for authentication and cloud storage, with permission-based access control so only people you invite can view or edit a shared sheet.",
+              },
+            ].map((item, i) => (
+              <details key={i} className="group rounded-2xl border border-[#d8e4f3] bg-[#f7fbff] p-4">
+                <summary className="cursor-pointer text-xs font-black uppercase tracking-wide text-[#2457d6] list-none flex items-center justify-between">
+                  {item.q}
+                  <span className="ml-2 text-[#8aa0bd] group-open:rotate-45 transition-transform">+</span>
+                </summary>
+                <p className="mt-3 text-xs leading-relaxed text-[#5f6f89]">{item.a}</p>
+              </details>
+            ))}
+          </div>
         </section>
 
         <section className="mt-6 rounded-[1.5rem] border border-[#c8d7ec] bg-[#f7fbff] p-5 text-center shadow-sm">
@@ -1356,8 +1566,8 @@ function UpgradeModal({ onClose, isDark, currentUser, onSupportClick }) {
   const [copied, setCopied] = useState(false);
 
   const PLANS = {
-    monthly: { label: "Monthly", bdtPrice: 1080, usdPrice: 9, period: "month", months: 1, lemonLink: LEMON_MONTHLY_LINK },
-    yearly:  { label: "Yearly",  bdtPrice: 10800, usdPrice: 90, period: "year", months: 12, save: "Save 30%", lemonLink: LEMON_YEARLY_LINK },
+    monthly: { label: "Monthly", bdtPrice: 491.1, usdPrice: 4, period: "month", months: 1, lemonLink: LEMON_MONTHLY_LINK },
+    yearly:  { label: "Yearly",  bdtPrice: 6138.62, usdPrice: 50, period: "year", months: 12, save: "Save 30%", lemonLink: LEMON_YEARLY_LINK },
   };
   const selectedPlan = PLANS[plan];
 
@@ -2376,6 +2586,7 @@ function App() {
   const [searchTerm,         setSearchTerm]         = useState("");
   const [user,               setUser]               = useState(null);
   const [page,               setPage]               = useState("landing");
+  const [activeBlogSlug,     setActiveBlogSlug]      = useState(null);
   const [isDark,             setIsDark]             = useState(false);
   const [showAdmin,          setShowAdmin]          = useState(false);
   const [showAnalytics,      setShowAnalytics]      = useState(false);
@@ -4752,8 +4963,6 @@ const btnSuccess =
       <div className="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-4 gap-3 md:gap-5">
         <div className="lg:col-span-3 flex flex-col gap-3 md:gap-4">
 
-          <BannerAd isDark={isDark} />
-
           {/* ===== HEADER ===== */}
           <header className={`${bgPanel} border ${borderColor} rounded-[1.75rem] px-4 py-1.5 shadow-xl flex flex-col md:flex-row justify-between items-center gap-1.5`}>
             <div className="flex items-center gap-3">
@@ -5735,7 +5944,6 @@ const btnSuccess =
 
         {/* ======== SIDEBAR ======== */}
         <div className="lg:col-span-1 flex flex-col gap-3 md:gap-4 order-last lg:order-none">
-          {!isPremium && <SidebarAd isDark={isDark} />}
 
           {/* History Panel */}
           <div className={`${bgPanel} border ${borderColor} rounded-[2rem] p-5 shadow-xl flex flex-col flex-1`}>
@@ -5763,7 +5971,7 @@ const btnSuccess =
               ) : (
                 history.map((item, idx) => (
                   <React.Fragment key={item.id}>
-                    {!isPremium && idx === 3 && history.length > 4 && <InFeedAd isDark={isDark} />}
+                    
                     <div
                       onClick={() => handleHistoryClick(item)}
                       className={`p-3.5 rounded-2xl border transition-all duration-150 cursor-pointer ${
