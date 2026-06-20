@@ -566,6 +566,9 @@ function BlogPost({ slug, onBack, isDark }) {
           <p key={i} className="text-sm leading-relaxed text-[#5f6f89]">{para}</p>
         ))}
       </div>
+      <div className="mt-6">
+        <InFeedAd isDark={isDark} />
+      </div>
     </div>
   );
 }
@@ -594,10 +597,104 @@ function BlogPage({ onBackToHome, isDark }) {
   );
 }
 
+function ContactPage({ onBackToHome, isDark }) {
+  const [formData, setFormData] = useState({ name: "", email: "", message: "" });
+  const [sent, setSent] = useState(false);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const subject = encodeURIComponent("Support request from " + formData.name);
+    const body = encodeURIComponent(formData.message + "\n\nReply to: " + formData.email);
+    window.location.href = `mailto:iftia5061@gmail.com?subject=${subject}&body=${body}`;
+    setSent(true);
+  };
+
+  return (
+    <div className="min-h-screen bg-[#eef4ff] text-[#172033] font-sans" style={{ fontFamily: "'DM Mono','Fira Mono',monospace" }}>
+      <main className="mx-auto w-full max-w-[1480px] px-4 pb-10 pt-4 sm:px-6 lg:px-8">
+        <div className="mb-4 flex items-center justify-between">
+          <button onClick={onBackToHome} className="text-[10px] font-black uppercase tracking-widest text-[#2457d6]">← Back to SheetMind</button>
+        </div>
+        <section className="rounded-[2rem] border border-[#c8d7ec] bg-white/78 p-4 shadow-[0_30px_95px_rgba(43,76,126,0.14)] backdrop-blur-xl sm:p-6 lg:p-8">
+          <p className="mb-2 text-[10px] font-black uppercase tracking-[0.34em] text-[#3978d8]">Get in Touch</p>
+          <h1 className="mb-4 text-2xl font-black uppercase tracking-tight text-[#172033] sm:text-3xl">
+            Contact SheetMind Support
+          </h1>
+          <p className="mb-6 max-w-2xl text-sm leading-relaxed text-[#5f6f89]">
+            Have a question about your account, billing, or a feature request? Send us a message using the form
+            below, or email us directly. We typically respond within one to two business days. You can also use
+            the live chat widget in the bottom corner of the app for faster help with common questions.
+          </p>
+
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+            <form onSubmit={handleSubmit} className="rounded-2xl border border-[#d8e4f3] bg-[#f7fbff] p-5">
+              <div className="mb-4">
+                <label className="mb-1 block text-[10px] font-black uppercase tracking-widest text-[#36516f]">Name</label>
+                <input
+                  required
+                  type="text"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  className="w-full rounded-xl border border-[#c8d7ec] bg-white px-3 py-2 text-sm text-[#172033] outline-none focus:border-[#2457d6]"
+                />
+              </div>
+              <div className="mb-4">
+                <label className="mb-1 block text-[10px] font-black uppercase tracking-widest text-[#36516f]">Email</label>
+                <input
+                  required
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  className="w-full rounded-xl border border-[#c8d7ec] bg-white px-3 py-2 text-sm text-[#172033] outline-none focus:border-[#2457d6]"
+                />
+              </div>
+              <div className="mb-4">
+                <label className="mb-1 block text-[10px] font-black uppercase tracking-widest text-[#36516f]">Message</label>
+                <textarea
+                  required
+                  rows={4}
+                  value={formData.message}
+                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                  className="w-full rounded-xl border border-[#c8d7ec] bg-white px-3 py-2 text-sm text-[#172033] outline-none focus:border-[#2457d6]"
+                />
+              </div>
+              <button
+                type="submit"
+                className="rounded-xl border border-[#3978d8]/20 bg-[#2457d6] px-4 py-2 text-[10px] font-black uppercase tracking-widest text-white transition-all hover:-translate-y-0.5"
+              >
+                Send Message
+              </button>
+              {sent && (
+                <p className="mt-3 text-[10px] font-black uppercase tracking-widest text-emerald-600">
+                  Your email app should now be open. If not, email us directly below.
+                </p>
+              )}
+            </form>
+
+            <div className="rounded-2xl border border-[#d8e4f3] bg-[#f7fbff] p-5">
+              <h3 className="mb-3 text-xs font-black uppercase tracking-wide text-[#2457d6]">Other ways to reach us</h3>
+              <p className="mb-2 text-xs leading-relaxed text-[#5f6f89]">
+                Email: <a href="mailto:iftia5061@gmail.com" className="text-[#2457d6] underline">iftia5061@gmail.com</a>
+              </p>
+              <p className="mb-2 text-xs leading-relaxed text-[#5f6f89]">
+                Live chat: available inside the SheetMind app, bottom-right corner.
+              </p>
+              <p className="text-xs leading-relaxed text-[#5f6f89]">
+                For billing or Premium activation questions, please include your account email so we can locate
+                your subscription quickly.
+              </p>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  );
+}
+
 // ============================================================
 // LANDING PAGE
 // ============================================================
-function LandingPage({ onLogin, isDark, onSupportClick }) {
+function LandingPage({ onLogin, isDark, onSupportClick, onNavigate }) {
   const monthlyLink = LEMON_MONTHLY_LINK;
   const yearlyLink = LEMON_YEARLY_LINK;
   const desktopLink = LEMON_DESKTOP_LINK;
@@ -726,50 +823,53 @@ function LandingPage({ onLogin, isDark, onSupportClick }) {
   };
 
   return (
-    <div className="min-h-screen bg-[#eef4ff] text-[#172033] font-sans" style={{ fontFamily: "'DM Mono','Fira Mono',monospace" }}>
+    <div className="min-h-screen text-[#172033]" style={{ fontFamily: "'Inter',sans-serif", background: "radial-gradient(ellipse 80% 50% at 50% -10%, rgba(36,87,214,0.10), transparent), linear-gradient(180deg, #f3f6fc 0%, #eef4ff 40%, #eef4ff 100%)" }}>
       <main className="mx-auto w-full max-w-[1480px] px-4 pb-10 pt-4 sm:px-6 lg:px-8">
-        <section className="relative overflow-hidden rounded-[2rem] border border-[#c8d7ec] bg-white/78 p-4 shadow-[0_30px_95px_rgba(43,76,126,0.14)] backdrop-blur-xl sm:p-6 lg:p-8">
-          <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#2563eb] via-[#0ea5e9] to-[#16a34a]" />
-          <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <section className="relative overflow-hidden rounded-[2rem] border border-white/10 p-4 shadow-[0_40px_120px_rgba(10,22,40,0.35)] sm:p-6 lg:p-10" style={{ background: "radial-gradient(ellipse 70% 60% at 20% 0%, rgba(36,87,214,0.35), transparent 60%), radial-gradient(ellipse 60% 50% at 100% 10%, rgba(244,183,64,0.18), transparent 60%), linear-gradient(160deg, #0a1628 0%, #0f1f38 55%, #0a1628 100%)" }}>
+          <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-[#2563eb] via-[#0ea5e9] to-[#f4b740]" />
+          <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-[#2457d6]/20 blur-3xl" />
+          <div className="pointer-events-none absolute -left-16 bottom-0 h-56 w-56 rounded-full bg-[#f4b740]/10 blur-3xl" />
+
+          <div className="relative mb-8 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <p className="mb-2 text-[10px] font-black uppercase tracking-[0.34em] text-[#3978d8]">SheetMind Plans</p>
-              <h1 className="max-w-3xl text-2xl font-black uppercase tracking-tight text-[#172033] sm:text-3xl lg:text-4xl">
+              <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.34em] text-[#7fb1ff]" style={{ fontFamily: "'DM Mono',monospace" }}>SheetMind Plans</p>
+              <h1 className="max-w-3xl text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-[2.75rem]" style={{ fontFamily: "'Space Grotesk',sans-serif", lineHeight: 1.08 }}>
                 Choose how you want to work
               </h1>
-              <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[#5f6f89]">
+              <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-[#b8c6e0]">
                 Pick a plan first. Free users can start instantly; premium users can unlock faster data-entry workflows for client, office, and business records.
               </p>
             </div>
-            <div className="rounded-2xl border border-[#d8e4f3] bg-[#f7fbff] px-4 py-3 text-left sm:text-right">
-              <p className="text-[9px] font-black uppercase tracking-[0.24em] text-[#8aa0bd]">Built for</p>
-              <p className="mt-1 text-[11px] font-black uppercase tracking-widest text-[#36516f]">Freelancers, offices, teams</p>
+            <div className="rounded-2xl border border-white/10 bg-white/[0.06] px-5 py-4 text-left backdrop-blur-sm sm:text-right">
+              <p className="text-[9px] font-bold uppercase tracking-[0.24em] text-[#7fb1ff]" style={{ fontFamily: "'DM Mono',monospace" }}>Built for</p>
+              <p className="mt-1.5 text-[12px] font-semibold tracking-wide text-white">Freelancers, offices, teams</p>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
+          <div className="relative grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
             {plans.map((plan, index) => <PlanCard key={plan.id} plan={plan} index={index} />)}
           </div>
         </section>
 
-        <section className="mt-6 rounded-[1.5rem] border border-[#c8d7ec] bg-white p-6 shadow-[0_18px_45px_rgba(43,76,126,0.09)] sm:p-8">
-          <p className="mb-2 text-[10px] font-black uppercase tracking-[0.34em] text-[#3978d8]">About SheetMind</p>
-          <h2 className="mb-4 text-xl font-black uppercase tracking-tight text-[#172033] sm:text-2xl">
+        <section className="mt-6 rounded-[1.5rem] border border-[#dde6f5] bg-white/90 p-6 shadow-[0_18px_45px_rgba(43,76,126,0.08)] backdrop-blur-sm sm:p-8">
+          <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.34em] text-[#2457d6]" style={{ fontFamily: "'DM Mono',monospace" }}>About SheetMind</p>
+          <h2 className="mb-4 text-2xl font-bold tracking-tight text-[#0f1f38] sm:text-[1.75rem]" style={{ fontFamily: "'Space Grotesk',sans-serif" }}>
             What is SheetMind and who is it for?
           </h2>
-          <p className="mb-4 text-sm leading-relaxed text-[#5f6f89]">
+          <p className="mb-4 text-[15px] leading-relaxed text-[#475569]">
             SheetMind is a cloud-based, AI-assisted spreadsheet tool built for freelancers, small offices, and
             growing teams who need a faster alternative to traditional spreadsheet software. Instead of juggling
             complex formulas and clunky desktop programs, SheetMind lets you build, edit, and share tables directly
             in your browser, with changes saved automatically to the cloud so your data is never lost.
           </p>
-          <p className="mb-6 text-sm leading-relaxed text-[#5f6f89]">
+          <p className="mb-7 text-[15px] leading-relaxed text-[#475569]">
             Whether you are tracking inventory, managing payroll, organizing a student list, running a small CRM,
             or preparing an invoice for a client, SheetMind gives you the structure of a spreadsheet with the
             simplicity of a modern app. Real-time collaboration means your team can work on the same table at the
             same time, and one-click exports to Excel or PDF make it easy to share finished work with anyone.
           </p>
 
-          <h3 className="mb-4 text-base font-black uppercase tracking-tight text-[#172033]">How SheetMind Works</h3>
+          <h3 className="mb-4 text-lg font-semibold tracking-tight text-[#0f1f38]" style={{ fontFamily: "'Space Grotesk',sans-serif" }}>How SheetMind Works</h3>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             {[
               {
@@ -788,12 +888,12 @@ function LandingPage({ onLogin, isDark, onSupportClick }) {
                 body: "Your work auto-saves to the cloud. Invite collaborators by email, or export to Excel and PDF when you are done.",
               },
             ].map((item) => (
-              <div key={item.step} className="rounded-2xl border border-[#d8e4f3] bg-[#f7fbff] p-4">
-                <span className="mb-2 inline-flex h-7 w-7 items-center justify-center rounded-full bg-[#2457d6] text-xs font-black text-white">
+              <div key={item.step} className="rounded-2xl border border-[#dde6f5] bg-[#f7fbff] p-5 transition-all duration-300 hover:border-[#2457d6]/25 hover:bg-[#f3f8ff]">
+                <span className="mb-3 inline-flex h-7 w-7 items-center justify-center rounded-full bg-[#2457d6] text-xs font-bold text-white" style={{ fontFamily: "'Space Grotesk',sans-serif" }}>
                   {item.step}
                 </span>
-                <h4 className="mt-2 text-xs font-black uppercase tracking-wide text-[#2457d6]">{item.title}</h4>
-                <p className="mt-2 text-xs leading-relaxed text-[#5f6f89]">{item.body}</p>
+                <h4 className="mt-1 text-[13px] font-semibold tracking-tight text-[#0f1f38]" style={{ fontFamily: "'Space Grotesk',sans-serif" }}>{item.title}</h4>
+                <p className="mt-2 text-[13px] leading-relaxed text-[#475569]">{item.body}</p>
               </div>
             ))}
           </div>
@@ -814,19 +914,20 @@ function LandingPage({ onLogin, isDark, onSupportClick }) {
               body: "Start free, then move to monthly, yearly, desktop, or phone app plans when your work volume grows.",
             },
           ].map((item) => (
-            <div key={item.title} className="rounded-[1.5rem] border border-[#c8d7ec] bg-white p-6 shadow-[0_18px_45px_rgba(43,76,126,0.09)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_24px_65px_rgba(43,76,126,0.14)]">
-              <h2 className="text-sm font-black uppercase tracking-[0.18em] text-[#2457d6]">{item.title}</h2>
-              <p className="mt-3 text-xs leading-relaxed text-[#5f6f89]">{item.body}</p>
+            <div key={item.title} className="group rounded-[1.5rem] border border-[#dde6f5] bg-white/90 p-6 shadow-[0_18px_45px_rgba(43,76,126,0.08)] backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#2457d6]/30 hover:shadow-[0_24px_65px_rgba(43,76,126,0.16)]">
+              <div className="mb-3 h-[3px] w-8 rounded-full bg-[#2457d6] transition-all duration-300 group-hover:w-12" />
+              <h2 className="text-[15px] font-semibold tracking-tight text-[#0f1f38]" style={{ fontFamily: "'Space Grotesk',sans-serif" }}>{item.title}</h2>
+              <p className="mt-2.5 text-[13px] leading-relaxed text-[#475569]">{item.body}</p>
             </div>
           ))}
         </section>
 
-        <section className="mt-6 rounded-[1.5rem] border border-[#c8d7ec] bg-white p-6 shadow-[0_18px_45px_rgba(43,76,126,0.09)] sm:p-8">
-          <p className="mb-2 text-[10px] font-black uppercase tracking-[0.34em] text-[#3978d8]">FAQ</p>
-          <h2 className="mb-5 text-xl font-black uppercase tracking-tight text-[#172033] sm:text-2xl">
+        <section className="mt-6 rounded-[1.5rem] border border-[#dde6f5] bg-white/90 p-6 shadow-[0_18px_45px_rgba(43,76,126,0.08)] backdrop-blur-sm sm:p-8">
+          <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.34em] text-[#2457d6]" style={{ fontFamily: "'DM Mono',monospace" }}>FAQ</p>
+          <h2 className="mb-5 text-2xl font-bold tracking-tight text-[#0f1f38] sm:text-[1.75rem]" style={{ fontFamily: "'Space Grotesk',sans-serif" }}>
             Frequently Asked Questions
           </h2>
-          <div className="space-y-4">
+          <div className="space-y-3">
             {[
               {
                 q: "Is SheetMind free to use?",
@@ -857,27 +958,35 @@ function LandingPage({ onLogin, isDark, onSupportClick }) {
                 a: "Yes. SheetMind uses Google Firebase for authentication and cloud storage, with permission-based access control so only people you invite can view or edit a shared sheet.",
               },
             ].map((item, i) => (
-              <details key={i} className="group rounded-2xl border border-[#d8e4f3] bg-[#f7fbff] p-4">
-                <summary className="cursor-pointer text-xs font-black uppercase tracking-wide text-[#2457d6] list-none flex items-center justify-between">
+              <details key={i} className="group rounded-2xl border border-[#dde6f5] bg-[#f7fbff] p-4 transition-colors duration-200 [&[open]]:border-[#2457d6]/30 [&[open]]:bg-[#f3f8ff]">
+                <summary className="flex cursor-pointer list-none items-center justify-between text-[14px] font-medium text-[#0f1f38]">
                   {item.q}
-                  <span className="ml-2 text-[#8aa0bd] group-open:rotate-45 transition-transform">+</span>
+                  <span className="ml-3 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-[#2457d6]/10 text-sm font-bold text-[#2457d6] transition-transform duration-200 group-open:rotate-45">+</span>
                 </summary>
-                <p className="mt-3 text-xs leading-relaxed text-[#5f6f89]">{item.a}</p>
+                <p className="mt-3 text-[13px] leading-relaxed text-[#475569]">{item.a}</p>
               </details>
             ))}
           </div>
         </section>
 
-        <section className="mt-6 rounded-[1.5rem] border border-[#c8d7ec] bg-[#f7fbff] p-5 text-center shadow-sm">
-          <p className="text-[10px] font-black uppercase tracking-[0.28em] text-[#36516f]">
+        <section className="mt-6 overflow-hidden rounded-[1.5rem] border border-[#dde6f5] bg-white/60 shadow-[0_8px_30px_rgba(43,76,126,0.06)]">
+          <div className="min-h-[90px]">
+            <BannerAd isDark={isDark} />
+          </div>
+        </section>
+
+        <section className="mt-6 rounded-[1.5rem] border border-[#dde6f5] bg-white/90 p-6 text-center shadow-[0_18px_45px_rgba(43,76,126,0.08)] backdrop-blur-sm sm:p-7">
+          <p className="mx-auto max-w-2xl text-[13px] leading-relaxed text-[#475569]">
             Bangladesh users can pay with bKash after choosing a premium plan. Admin approval activates Premium.
           </p>
-          <button onClick={onSupportClick} className="mt-3 inline-flex rounded-xl border border-[#3978d8]/20 bg-white px-4 py-2 text-[10px] font-black uppercase tracking-widest text-[#2457d6] transition-all hover:-translate-y-0.5 hover:bg-[#eef5ff]">Payment Support</button>
-          
-            <a href="/terms.html" target="_blank" rel="noopener" className="mt-3 inline-flex rounded-xl border border-[#3978d8]/20 bg-white px-4 py-2 text-[10px] font-black uppercase tracking-widest text-[#2457d6] transition-all hover:-translate-y-0.5 hover:bg-[#eef5ff]">Terms of Service</a>
-            <a href="/privacy.html" target="_blank" rel="noopener" className="mt-3 inline-flex rounded-xl border border-[#3978d8]/20 bg-white px-4 py-2 text-[10px] font-black uppercase tracking-widest text-[#2457d6] transition-all hover:-translate-y-0.5 hover:bg-[#eef5ff]">Privacy Policy</a>
-            <a href="/refund.html" target="_blank" rel="noopener" className="mt-3 inline-flex rounded-xl border border-[#3978d8]/20 bg-white px-4 py-2 text-[10px] font-black uppercase tracking-widest text-[#2457d6] transition-all hover:-translate-y-0.5 hover:bg-[#eef5ff]">Refund Policy</a>
-          
+          <div className="mt-5 flex flex-wrap items-center justify-center gap-2.5">
+            <button onClick={onSupportClick} className="inline-flex rounded-xl border border-[#2457d6]/15 bg-[#f3f8ff] px-4 py-2 text-[11px] font-semibold text-[#2457d6] transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#2457d6] hover:text-white">Payment Support</button>
+            <button onClick={() => onNavigate("blog")} className="inline-flex rounded-xl border border-[#dde6f5] bg-white px-4 py-2 text-[11px] font-medium text-[#475569] transition-all duration-200 hover:-translate-y-0.5 hover:border-[#2457d6]/25 hover:text-[#2457d6]">Blog</button>
+            <button onClick={() => onNavigate("contact")} className="inline-flex rounded-xl border border-[#dde6f5] bg-white px-4 py-2 text-[11px] font-medium text-[#475569] transition-all duration-200 hover:-translate-y-0.5 hover:border-[#2457d6]/25 hover:text-[#2457d6]">Contact</button>
+            <a href="/terms.html" target="_blank" rel="noopener" className="inline-flex rounded-xl border border-[#dde6f5] bg-white px-4 py-2 text-[11px] font-medium text-[#475569] transition-all duration-200 hover:-translate-y-0.5 hover:border-[#2457d6]/25 hover:text-[#2457d6]">Terms of Service</a>
+            <a href="/privacy.html" target="_blank" rel="noopener" className="inline-flex rounded-xl border border-[#dde6f5] bg-white px-4 py-2 text-[11px] font-medium text-[#475569] transition-all duration-200 hover:-translate-y-0.5 hover:border-[#2457d6]/25 hover:text-[#2457d6]">Privacy Policy</a>
+            <a href="/refund.html" target="_blank" rel="noopener" className="inline-flex rounded-xl border border-[#dde6f5] bg-white px-4 py-2 text-[11px] font-medium text-[#475569] transition-all duration-200 hover:-translate-y-0.5 hover:border-[#2457d6]/25 hover:text-[#2457d6]">Refund Policy</a>
+          </div>
         </section>
       </main>
     </div>
@@ -4566,7 +4675,9 @@ const clearAllHistory = () => {
   return result;
 }, [rows, searchTerm, hideEmptyRows]);
 
-  if (page === "landing") return <LandingPage onLogin={handleGoogleLogin} isDark={isDark} onSupportClick={() => setShowSupportChat(true)} />;
+  if (page === "landing") return <LandingPage onLogin={handleGoogleLogin} isDark={isDark} onSupportClick={() => setShowSupportChat(true)} onNavigate={setPage} />;
+  if (page === "blog") return <BlogPage onBackToHome={() => setPage("landing")} isDark={isDark} />;
+  if (page === "contact") return <ContactPage onBackToHome={() => setPage("landing")} isDark={isDark} />;
 
   // ============================================================
   // DESIGN TOKENS — DEEP BLUE + GOLD PREMIUM THEME
