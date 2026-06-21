@@ -597,6 +597,120 @@ function BlogPage({ onBackToHome, isDark }) {
   );
 }
 
+const DEMO_COLUMNS_INIT = ["Item", "Quantity", "Unit Price", "Status"];
+const DEMO_ROWS_INIT = [
+  { Item: "Office Chairs", Quantity: "12", "Unit Price": "85", Status: "In Stock" },
+  { Item: "Laptops", Quantity: "5", "Unit Price": "650", Status: "Low Stock" },
+  { Item: "Desk Lamps", Quantity: "20", "Unit Price": "15", Status: "In Stock" },
+  { Item: "Notebooks", Quantity: "0", "Unit Price": "3", Status: "Out of Stock" },
+];
+
+function DemoPage({ onBackToHome, onSignup, isDark }) {
+  const [columns, setColumns] = useState(DEMO_COLUMNS_INIT);
+  const [rows, setRows] = useState(DEMO_ROWS_INIT);
+  const [showGatePrompt, setShowGatePrompt] = useState(false);
+
+  const updateCell = (rowIdx, col, value) => {
+    const next = rows.map((r, i) => (i === rowIdx ? { ...r, [col]: value } : r));
+    setRows(next);
+  };
+
+  const addRow = () => {
+    const blank = {};
+    columns.forEach((c) => (blank[c] = ""));
+    setRows([...rows, blank]);
+  };
+
+  const addColumn = () => {
+    const name = "New Column " + (columns.length + 1);
+    setColumns([...columns, name]);
+    setRows(rows.map((r) => ({ ...r, [name]: "" })));
+  };
+
+  const deleteColumn = (colName) => {
+    if (columns.length <= 1) return;
+    setColumns(columns.filter((c) => c !== colName));
+    setRows(rows.map((r) => { const nr = { ...r }; delete nr[colName]; return nr; }));
+  };
+
+  const gated = (fn) => () => { setShowGatePrompt(true); };
+
+  return (
+    <div className="min-h-screen text-[#172033]" style={{ fontFamily: "'Inter',sans-serif", background: "radial-gradient(ellipse 80% 50% at 50% -10%, rgba(36,87,214,0.10), transparent), linear-gradient(180deg, #f3f6fc 0%, #eef4ff 40%, #eef4ff 100%)" }}>
+      <main className="mx-auto w-full max-w-[1480px] px-4 pb-10 pt-4 sm:px-6 lg:px-8">
+        <div className="mb-4 flex items-center justify-between">
+          <button onClick={onBackToHome} className="text-[10px] font-bold uppercase tracking-widest text-[#2457d6]">← Back to SheetMind</button>
+          <button onClick={onSignup} className="rounded-xl bg-[#2457d6] px-4 py-2 text-[11px] font-semibold text-white transition-all hover:-translate-y-0.5">Sign up free</button>
+        </div>
+
+        <section className="rounded-[2rem] border border-[#dde6f5] bg-white/90 p-4 shadow-[0_30px_95px_rgba(43,76,126,0.14)] backdrop-blur-xl sm:p-6 lg:p-8">
+          <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.34em] text-[#2457d6]" style={{ fontFamily: "'DM Mono',monospace" }}>Live Demo — No Signup Required</p>
+          <h1 className="mb-2 text-2xl font-bold tracking-tight text-[#0f1f38] sm:text-3xl" style={{ fontFamily: "'Space Grotesk',sans-serif" }}>
+            Try SheetMind right here
+          </h1>
+          <p className="mb-6 max-w-2xl text-[14px] leading-relaxed text-[#475569]">
+            Edit cells, add rows or columns below. This demo runs only in your browser — nothing is saved.
+            Sign up free to save your work, export to Excel/PDF, and invite collaborators.
+          </p>
+
+          <div className="mb-4 flex flex-wrap gap-2.5">
+            <button onClick={addRow} className="rounded-xl border border-[#dde6f5] bg-[#f7fbff] px-4 py-2 text-[11px] font-semibold text-[#2457d6] transition-all hover:-translate-y-0.5 hover:bg-[#eef5ff]">+ Add Row</button>
+            <button onClick={addColumn} className="rounded-xl border border-[#dde6f5] bg-[#f7fbff] px-4 py-2 text-[11px] font-semibold text-[#2457d6] transition-all hover:-translate-y-0.5 hover:bg-[#eef5ff]">+ Add Column</button>
+            <button onClick={gated()} className="rounded-xl border border-[#dde6f5] bg-[#f7fbff] px-4 py-2 text-[11px] font-semibold text-[#2457d6] transition-all hover:-translate-y-0.5 hover:bg-[#eef5ff]">Export to PDF</button>
+            <button onClick={gated()} className="rounded-xl border border-[#dde6f5] bg-[#f7fbff] px-4 py-2 text-[11px] font-semibold text-[#2457d6] transition-all hover:-translate-y-0.5 hover:bg-[#eef5ff]">Export to Excel</button>
+            <button onClick={gated()} className="rounded-xl border border-[#dde6f5] bg-[#f7fbff] px-4 py-2 text-[11px] font-semibold text-[#2457d6] transition-all hover:-translate-y-0.5 hover:bg-[#eef5ff]">Invite Collaborator</button>
+          </div>
+
+          <div className="overflow-x-auto rounded-2xl border border-[#c8d7ec] shadow-[0_12px_35px_rgba(43,76,126,0.10)]">
+            <table className="w-full border-collapse text-sm">
+              <thead>
+                <tr style={{ background: "linear-gradient(135deg, #1a2f52 0%, #0f1f38 100%)" }}>
+                  {columns.map((col, idx) => (
+                    <th key={col} className={`px-4 py-3.5 text-left text-[11px] font-semibold uppercase tracking-wide text-white ${idx !== columns.length - 1 ? "border-r border-white/10" : ""}`}>
+                      <div className="flex items-center justify-between gap-2">
+                        <span style={{ fontFamily: "'Space Grotesk',sans-serif" }}>{col}</span>
+                        {columns.length > 1 && (
+                          <button onClick={() => deleteColumn(col)} className="flex h-5 w-5 items-center justify-center rounded-full text-white/50 transition-colors hover:bg-white/10 hover:text-white" title="Delete column">×</button>
+                        )}
+                      </div>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {rows.map((row, rowIdx) => (
+                  <tr key={rowIdx} className={`transition-colors ${rowIdx % 2 === 0 ? "bg-white" : "bg-[#f7fbff]"} hover:bg-[#eef5ff]`}>
+                    {columns.map((col, idx) => (
+                      <td key={col} className={`px-1 py-1 ${idx !== columns.length - 1 ? "border-r border-[#eef2f8]" : ""} border-b border-[#eef2f8]`}>
+                        <input
+                          value={row[col] ?? ""}
+                          onChange={(e) => updateCell(rowIdx, col, e.target.value)}
+                          className="w-full rounded-lg border border-transparent bg-transparent px-3 py-2.5 text-[13px] text-[#172033] outline-none transition-all focus:border-[#2457d6]/50 focus:bg-white focus:shadow-[0_0_0_3px_rgba(36,87,214,0.1)]"
+                        />
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {showGatePrompt && (
+            <div className="mt-5 rounded-2xl border border-[#2457d6]/20 bg-[#f3f8ff] p-5 text-center">
+              <p className="text-[13px] font-medium text-[#0f1f38]">
+                That feature needs a free account. Sign up to export your sheet or invite teammates.
+              </p>
+              <button onClick={onSignup} className="mt-3 rounded-xl bg-[#2457d6] px-5 py-2 text-[11px] font-semibold text-white transition-all hover:-translate-y-0.5">
+                Sign up free — it takes 10 seconds
+              </button>
+            </div>
+          )}
+        </section>
+      </main>
+    </div>
+  );
+}
+
 function ContactPage({ onBackToHome, isDark }) {
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
   const [sent, setSent] = useState(false);
@@ -840,9 +954,23 @@ function LandingPage({ onLogin, isDark, onSupportClick, onNavigate }) {
                 Pick a plan first. Free users can start instantly; premium users can unlock faster data-entry workflows for client, office, and business records.
               </p>
             </div>
-            <div className="rounded-2xl border border-white/10 bg-white/[0.06] px-5 py-4 text-left backdrop-blur-sm sm:text-right">
-              <p className="text-[9px] font-bold uppercase tracking-[0.24em] text-[#7fb1ff]" style={{ fontFamily: "'DM Mono',monospace" }}>Built for</p>
-              <p className="mt-1.5 text-[12px] font-semibold tracking-wide text-white">Freelancers, offices, teams</p>
+            <div className="flex flex-col items-start gap-3 sm:items-end">
+              <div className="rounded-2xl border border-white/10 bg-white/[0.06] px-5 py-4 text-left backdrop-blur-sm sm:text-right">
+                <p className="text-[9px] font-bold uppercase tracking-[0.24em] text-[#7fb1ff]" style={{ fontFamily: "'DM Mono',monospace" }}>Built for</p>
+                <p className="mt-1.5 text-[12px] font-semibold tracking-wide text-white">Freelancers, offices, teams</p>
+              </div>
+              <button onClick={() => onNavigate("demo")} className="group relative overflow-hidden rounded-2xl bg-[#f4b740] px-7 py-3.5 text-[13px] font-bold text-[#0a1628] shadow-[0_0_0_0_rgba(244,183,64,0.5)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_30px_rgba(244,183,64,0.5)]" style={{ animation: "pulseGlow 2.4s ease-in-out infinite" }}>
+                <span className="relative z-10 flex items-center gap-2">
+                  ✨ Try it now — no signup required
+                  <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
+                </span>
+              </button>
+              <style>{`
+                @keyframes pulseGlow {
+                  0%, 100% { box-shadow: 0 0 0 0 rgba(244,183,64,0.45); }
+                  50% { box-shadow: 0 0 0 10px rgba(244,183,64,0); }
+                }
+              `}</style>
             </div>
           </div>
 
@@ -4678,6 +4806,7 @@ const clearAllHistory = () => {
   if (page === "landing") return <LandingPage onLogin={handleGoogleLogin} isDark={isDark} onSupportClick={() => setShowSupportChat(true)} onNavigate={setPage} />;
   if (page === "blog") return <BlogPage onBackToHome={() => setPage("landing")} isDark={isDark} />;
   if (page === "contact") return <ContactPage onBackToHome={() => setPage("landing")} isDark={isDark} />;
+  if (page === "demo") return <DemoPage onBackToHome={() => setPage("landing")} onSignup={handleGoogleLogin} isDark={isDark} />;
 
   // ============================================================
   // DESIGN TOKENS — DEEP BLUE + GOLD PREMIUM THEME
