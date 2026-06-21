@@ -72,6 +72,9 @@ const FREE_COLLAB_LIMIT = 3; // Free plan max collaborators
 // ↓ REPLACE with your real AdSense Publisher ID
 // Line 51-57 এ এই অংশটা replace করো:
 const ADSENSE_PUB_ID = "ca-pub-5628645711343874";
+
+// ↓ Paste your YouTube video ID here once uploaded (the part after "v=" in the URL)
+const DEMO_VIDEO_ID = "ZGat5utwCcc";
 const AD_SLOTS = {
   sidebar: "2562908490",
   banner:  "7361245890",
@@ -978,6 +981,25 @@ function LandingPage({ onLogin, isDark, onSupportClick, onNavigate }) {
             {plans.map((plan, index) => <PlanCard key={plan.id} plan={plan} index={index} />)}
           </div>
         </section>
+
+        {DEMO_VIDEO_ID && (
+          <section className="relative mt-6 overflow-hidden rounded-[1.5rem] border border-white/10 p-6 shadow-[0_30px_90px_rgba(10,22,40,0.30)] sm:p-8" style={{ background: "radial-gradient(ellipse 60% 50% at 30% 0%, rgba(36,87,214,0.25), transparent 60%), linear-gradient(160deg, #0a1628 0%, #0f1f38 60%, #0a1628 100%)" }}>
+            <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.34em] text-[#7fb1ff]" style={{ fontFamily: "'DM Mono',monospace" }}>Watch Demo</p>
+            <h2 className="mb-5 text-2xl font-bold tracking-tight text-white sm:text-[1.75rem]" style={{ fontFamily: "'Space Grotesk',sans-serif" }}>
+              See SheetMind in action
+            </h2>
+            <div className="relative mx-auto w-full max-w-[700px] overflow-hidden rounded-2xl border border-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.4)]" style={{ background: "#000" }}>
+              <iframe
+                src={`https://www.youtube.com/embed/${DEMO_VIDEO_ID}`}
+                title="SheetMind Demo Video"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="block w-full"
+                style={{ border: "none", aspectRatio: "16 / 9" }}
+              />
+            </div>
+          </section>
+        )}
 
         <section className="mt-6 rounded-[1.5rem] border border-[#dde6f5] bg-white/90 p-6 shadow-[0_18px_45px_rgba(43,76,126,0.08)] backdrop-blur-sm sm:p-8">
           <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.34em] text-[#2457d6]" style={{ fontFamily: "'DM Mono',monospace" }}>About SheetMind</p>
