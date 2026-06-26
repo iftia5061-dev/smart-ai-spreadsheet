@@ -61,7 +61,7 @@ const LEMON_WEB_LINK = "https://ifti.gumroad.com/l/ydknwu";
 const LEMON_APP_LINK = "https://ifti.gumroad.com/l/ydknwu";
 const LEMON_MONTHLY_LINK = "https://ifti.gumroad.com/l/ydknwu";
 const LEMON_YEARLY_LINK = "https://ifti.gumroad.com/l/sfzmsb";
-const LEMON_DESKTOP_LINK = "https://ifti.gumroad.com/l/ydknwu";
+const LEMON_DESKTOP_LINK = "https://ifti.gumroad.com/l/zckhcg";
 const LEMON_PHONE_LINK = "https://ifti.gumroad.com/l/qpmsr";
 const SUPPORT_LINK = "mailto:iftia5061@gmail.com?subject=SheetMind%20Payment%20Support";
 const AUTOSAVE_DELAY = 1500;
